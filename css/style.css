@@ -1,0 +1,390 @@
+/* ------------------------------------------------------------------
+   André Alves — réplica do site Squarespace (andrealvesdesign.com)
+   Medidas tiradas do original a 1440 px: margem lateral 7.1vw,
+   Manrope (títulos) + Roboto (texto), preto #070707.
+   ------------------------------------------------------------------ */
+:root {
+  /* cores do tema claro (original) */
+  --bg: #fff;              /* fundo da página e do cabeçalho */
+  --ink: #000;             /* texto principal */
+  --text: #1b1b1b;         /* parágrafos do Sobre mim */
+  --black: #070707;        /* blocos escuros: info do projeto, competências, rodapé */
+  --on-black: #fff;        /* texto nos blocos escuros */
+  --footer-link: #eaeaee;
+  --btn-bg: #000;
+  --btn-fg: #fff;
+  --logo-filter: none;
+  --shadow: 0 2px 12px rgb(0 0 0 / .12);
+  --side: 7.088%;          /* 101 px a 1425 px */
+  --gap: 11px;
+  --header-h: 125px;      /* altura do cabeçalho (no Squarespace era 92 px) */
+  --gallery-gap: 13px;    /* espaço branco entre peças das galerias (era 10-11 px, como no Squarespace) */
+  /* tamanhos que crescem com o ecrã, com a mesma fórmula do Squarespace
+     (medido no original: valores iguais a 1440 px e a 1920 px de largura) */
+  --fs-site-title: calc(16.43px + 0.570vw);    /* 24.6 px a 1440 · 27.4 px a 1920 */
+  --fs-card: calc(17.04px + 1.368vw);          /* 36.7 px · 43.3 px  (títulos da grelha e paginação) */
+  --fs-project-title: calc(17.55px + 2.052vw); /* 47.1 px · 57.0 px  (título no bloco preto) */
+  --fs-lead: calc(16.35px + 0.456vw);          /* 22.9 px · 25.1 px  (texto do bloco preto e do Sobre mim) */
+  --fs-h1: calc(18.59px + 3.420vw);            /* 67.8 px · 84.3 px  (títulos do Sobre mim) */
+  --fs-h4: calc(16.52px + 0.684vw);            /* 26.4 px · 29.7 px  (competências e nota dos clientes) */
+  --heading: "Manrope", sans-serif;
+  --body: "Roboto", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3, h4, p { margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: -9999px; top: 1rem; z-index: 100; background: #000; color: #fff; padding: 1rem 1.25rem; text-transform: uppercase; text-decoration: none; }
+.skip:focus { left: 1rem; }
+
+/* entrada suave dos elementos ao aparecerem no ecrã:
+   desvanecer + subir 16 px, lento e sem ressalto. Só usa opacity/transform,
+   por isso corre fluido em qualquer dispositivo. --d = atraso em cascata (definido no main.js) */
+.js .fade {
+  opacity: 0; transform: translate3d(0, 16px, 0);
+  transition: opacity 1s cubic-bezier(.22, .61, .36, 1), transform 1.2s cubic-bezier(.22, .61, .36, 1);
+  transition-delay: var(--d, 0s);
+}
+.js .fade.in { opacity: 1; transform: none; }
+.js .project-hero.fade { transform: none; transition-duration: 1.2s; }   /* o topo só desvanece, não se mexe */
+/* imagens e vídeos: revelam-se de baixo para cima (recorte), como no Squarespace
+   (medido no original: clip-path de uma linha em baixo até ao retângulo todo, 0,8 s, cubic-bezier(.19, 1, .22, 1)) */
+.js .fade.clip {
+  transform: none;
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transition: opacity .8s cubic-bezier(.19, 1, .22, 1), clip-path .8s cubic-bezier(.19, 1, .22, 1);
+  transition-delay: 0s;   /* peças lado a lado revelam-se ao mesmo tempo */
+}
+.js .fade.clip.in { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+/* variante lateral (foto do Sobre mim): abre da direita para a esquerda */
+.js .fade.clip.clip-x:not(.in) { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+@media (prefers-reduced-motion: reduce) {
+  .js .fade { transform: none; transition: opacity .4s ease; transition-delay: 0s; }
+  .js .fade.clip, .js .fade.clip.in, .js .fade.clip.clip-x:not(.in) { clip-path: none; transition: opacity .4s ease; }
+}
+
+/* ---------- cabeçalho ---------- */
+.site-header {
+  position: relative; z-index: 20; height: var(--header-h); padding: 0 var(--side); background: var(--bg);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+}
+.site-title { justify-self: start; font: 500 var(--fs-site-title)/1.2 var(--heading); letter-spacing: -.02em; text-decoration: none; }
+.site-nav { display: flex; gap: 11px; padding-bottom: 0; font-size: 18px; }   /* 16 px no original; +2 px */
+.site-nav a { text-decoration: none; line-height: 24px; padding: 1px 0 2px; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.header-actions { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.social { display: grid; place-items: center; width: 24px; height: 24px; }   /* caixa clicável; o desenho tem o tamanho do texto */
+.social svg { width: 15px; height: 15px; fill: currentColor; transform: translateY(-2px); }   /* fundo na linha de base do texto; sobe acima do topo do "P" */
+.social-mail svg { width: 14.66px; height: 11.2px; transform: translateY(0); }   /* mesma linha de base do texto; um pouco mais largo porque o envelope é retangular */
+.lang { position: relative; }
+.lang-btn { display: flex; align-items: center; gap: 2px; line-height: 24px; padding: 2px 0; }
+.lang-btn svg { width: 20px; height: 20px; }
+.lang-menu { position: absolute; right: 0; top: 100%; margin: 6px 0 0; padding: 8px 0; list-style: none; background: var(--bg); box-shadow: var(--shadow); min-width: 140px; }
+.lang-menu button { display: block; width: 100%; text-align: left; padding: 6px 16px; }
+.lang-menu button:hover { text-decoration: underline; }
+.burger { display: none; }
+.mobile-menu { display: none; }
+
+/* ---------- home: grelha ---------- */
+/* as capas começam logo abaixo do cabeçalho, à mesma altura da imagem de topo dos projetos */
+:root { --grid-side: var(--side); }
+.portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gallery-gap); padding: 0 var(--grid-side) 29px; }
+.grid-item { position: relative; display: block; aspect-ratio: 602 / 420; overflow: hidden; text-decoration: none; }
+.grid-item img { width: 100%; height: 100%; object-fit: cover; }
+/* ao passar o rato: a imagem aproxima-se ligeiramente, ao mesmo tempo que surge o branco com o título */
+@media (hover: hover) {
+  .grid-item img { transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter .6s cubic-bezier(.2, .7, .2, 1); }
+  /* zoom um pouco maior com o desfoque, para as margens desfocadas ficarem fora do cartão */
+  .grid-item:hover img, .grid-item:focus-visible img { transform: scale(1.06); filter: blur(8px); }
+}
+@media (prefers-reduced-motion: reduce) { .grid-item img { transition: none; } .grid-item:hover img, .grid-item:focus-visible img { transform: none; filter: none; } }
+.grid-overlay {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 42px;
+  background: rgb(255 255 255 / .9); opacity: 0; transition: opacity .3s ease;   /* branco a 90%: a imagem vê-se levemente por baixo; o título mantém-se opaco */
+}
+.grid-item:hover .grid-overlay, .grid-item:focus-visible .grid-overlay { opacity: 1; }
+.grid-title { font: 700 var(--fs-card)/1.2 var(--heading); letter-spacing: -.02em; text-align: center; color: var(--ink); }
+/* o branco aparece logo; o título entra 0,17 s depois (e sai de imediato ao tirar o rato) */
+.grid-text { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; row-gap: 22px; padding: 0 42px; opacity: 0; transition: opacity .3s ease; }
+.grid-item:hover .grid-text, .grid-item:focus-visible .grid-text { opacity: 1; transition-delay: .17s; }
+/* dois blocos centrados: o nome do projeto e, um pouco abaixo, a informação (áreas em cima, data por baixo) */
+.grid-meta { display: grid; justify-items: center; gap: 2px; text-align: center; font-size: 15px; line-height: 22px; color: var(--ink); text-transform: uppercase; }
+.grid-meta strong { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .grid-text { transition: none; } .grid-item:hover .grid-text, .grid-item:focus-visible .grid-text { transition-delay: 0s; } }
+
+/* ---------- projeto ---------- */
+/* como no Squarespace, o cabeçalho fica por cima do topo da imagem;
+   parte visível igual ao original: 399 px a 1440 · 529 px a 1920 */
+.project-hero { position: relative; margin-top: calc(-1 * var(--header-h)); height: calc(27.08vw + 9px + var(--header-h)); min-height: 260px; overflow: hidden; background: #111; }
+.hero-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.project-info { background: var(--black); color: var(--on-black); padding: 66px var(--side) 150px; }
+.info-grid { display: grid; grid-template-columns: 555fr 658fr; column-gap: var(--gap); grid-template-areas: "title text" "meta text"; grid-template-rows: auto 1fr; align-items: start; }
+.info-title { grid-area: title; font: 500 var(--fs-project-title)/1.1136 var(--heading); letter-spacing: -.02em; }
+.info-title strong { font-weight: 700; }
+.info-text { grid-area: text; font-size: var(--fs-lead); line-height: 1.5; }
+.info-meta { grid-area: meta; padding-top: 23px; }
+.info-side { grid-area: meta; }
+.info-side .info-meta { grid-area: auto; }
+.info-meta p { line-height: 24px; }
+.info-meta p + p { margin-top: 14px; }
+
+.project-gallery { padding: var(--gallery-gap) var(--side) 0; display: grid; gap: var(--gallery-gap); }
+.gallery-row { display: grid; column-gap: var(--gallery-gap); }
+.gallery-item { overflow: hidden; position: relative; }
+/* pares de imagens: todos com a altura da linha manual + cartão (553 px a 1440) */
+@media (min-width: 768px) {
+  .row-pair { aspect-ratio: 1223 / 553; }
+  .row-pair .gallery-item { aspect-ratio: auto !important; height: 100%; }
+}
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+
+/* altura cresce com o ecrã, como no original: 123 px a 1440 · 158 px a 1920 */
+.item-pagination { display: flex; justify-content: space-between; align-items: center; height: calc(7.29vw + 18px); padding: 0 var(--side); }
+.item-pagination .pag-next:only-child { margin-left: auto; }   /* sem "anterior" (1.º projeto), o "próximo" fica à direita */
+.item-pagination a { display: flex; align-items: center; gap: 34px; text-decoration: none; }
+.item-pagination svg { width: 9px; height: 16px; stroke: currentColor; stroke-width: 1.3; }
+.pag-title { font: 500 var(--fs-card)/1 var(--heading); letter-spacing: -.02em; }
+.item-pagination a:hover .pag-title { opacity: .7; }
+
+/* ---------- sobre mim ---------- */
+/* o cabeçalho fica por cima do topo desta secção, como no original */
+.about-intro { display: grid; grid-template-columns: 606fr 62fr 555fr; padding: 39px var(--side) 77px; align-items: start; }
+.about-text { grid-column: 1; padding-top: 90px; }
+.about-photo { grid-column: 3; aspect-ratio: 555 / 802; }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; }
+.page-about h1 { font: 500 var(--fs-h1)/1.056 var(--heading); letter-spacing: -.02em; }
+.about-text h1 { margin-bottom: 26px; }
+.about-text p { font-size: var(--fs-lead); line-height: 1.5; color: var(--text); }
+.about-text p + p { margin-top: 16px; }
+.button {
+  display: inline-block; margin-top: 55px; background: var(--btn-bg); color: var(--btn-fg); text-decoration: none;
+  font: 500 16px/normal var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 16px 20.8px;
+}
+.button:hover { opacity: .8; }
+/* botão claro, para fundos pretos (p.ex. ligação ao projeto real) */
+.button-light { --btn-bg: #fff; --btn-fg: #070707; margin-top: 44px; }
+
+.about-skills { background: var(--black); color: var(--on-black); display: grid; grid-template-columns: 606fr 606fr; column-gap: var(--gap); padding: 100px var(--side) 123px; align-items: start; }
+.skills-cols { display: grid; grid-template-columns: 246fr 298fr 40fr; column-gap: var(--gap); padding-top: 23px; }
+.skills-cols h4, .clients-note { font: 500 var(--fs-h4)/1.171 var(--heading); letter-spacing: -.02em; }
+.skills-cols h4 + h4 { margin-top: 32px; }
+
+.about-clients { display: grid; grid-template-columns: 606fr 606fr; column-gap: var(--gap); padding: 100px var(--side) 92px; align-items: start; }
+.clients-note { padding-top: 23px; }
+/* carrossel infinito dos logos: duas cópias da lista a deslizar sem parar */
+.logos { grid-column: 1 / -1; margin-top: 58px; display: flex; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track { display: flex; flex: none; gap: var(--logo-gap); padding: 0 calc(var(--logo-gap) / 2); margin: 0; list-style: none;
+  animation: marquee 55s linear infinite; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+.logo { flex: none; width: var(--logo-w); aspect-ratio: 195 / 164; }
+.logo img { width: 100%; height: 100%; object-fit: contain; filter: var(--logo-filter); }
+/* ligeiro aumento ao passar o rato por cada logo */
+.logo img { transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+@media (hover: hover) { .logo:hover img { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .logo img { transition: none; } .logo:hover img { transform: none; } }
+:root { --logo-w: calc(14.7vw - 2px); --logo-gap: calc(4.35vw); }   /* logos 210 px e espaço 62 px a 1440 (na grelha original eram 195 px) */
+@media (prefers-reduced-motion: reduce) {
+  .logos { flex-wrap: wrap; -webkit-mask-image: none; mask-image: none; }
+  .marquee-track { animation: none; flex-wrap: wrap; row-gap: 24px; padding: 0; }
+  .marquee-track[aria-hidden] { display: none; }
+}
+
+/* ---------- rodapé ---------- */
+.site-footer { background: var(--black); color: var(--on-black); padding: 0 var(--side); }
+/* tamanhos e altura crescem com o ecrã, como no original (medido a 1440 e 1920 px) */
+.footer-inner { height: calc(11.04vw + 56px); display: grid; grid-template-columns: 42.03% auto 1fr; align-items: center; }   /* 215 · 268 px */
+.footer-mail { padding-top: 7px; font-size: calc(1.0625vw - 1.1px); }                                                         /* 14.2 · 19.3 px */
+.footer-mail a { text-decoration: underline; text-underline-offset: 2.84px; }
+.footer-nav { display: flex; gap: calc(3.75vw + 8px); font: 500 calc(1.417vw - 2px)/1 var(--heading); letter-spacing: -.02em; color: var(--footer-link); }
+.footer-nav a { text-decoration: underline; text-underline-offset: 3.68px; }
+.footer-nav strong { font-weight: 700; }
+.footer-nav a + a { font-size: calc(1.375vw - 2.5px); }   /* SOBRE MIM: 17.3 · 23.9 px (PROJETOS: 18.4 · 25.2 px) */
+.footer-copy { justify-self: end; width: calc(10.83vw - 13px); text-align: center; line-height: 24px; }   /* 2 linhas a 1440, 1 linha a 1920 */
+.site-footer a:hover { opacity: .7; }
+
+/* ---------- telemóvel (até 767 px, como o Squarespace) ---------- */
+@media (max-width: 767px) {
+  :root { --side: 6.133%; --gap: 11px; --header-h: 82px; }
+  .site-header { height: var(--header-h); grid-template-columns: 1fr auto; align-items: center; padding-bottom: 0; padding-top: 0; }
+  .site-title { font-size: 16px; }
+  .site-nav, .header-actions { display: none; }
+  .burger { display: grid; gap: 7px; width: 36px; height: 36px; place-content: center; justify-self: end; }
+  .burger span { display: block; width: 26px; height: 1px; background: currentColor; transition: transform .25s ease; }
+  .burger[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  .mobile-menu:not([hidden]) { display: flex; flex-direction: column; justify-content: space-between; position: fixed; inset: var(--header-h) 0 0; z-index: 19; background: var(--bg); padding: 32px var(--side) 40px; }
+  .mobile-menu nav { display: grid; gap: 16px; text-align: center; }
+  .mobile-menu nav a { font: 500 32px/1.2 var(--heading); letter-spacing: -.02em; text-decoration: none; }
+  .mobile-menu-foot { display: flex; justify-content: center; align-items: center; gap: 16px; }
+  .mobile-menu-foot button { padding: 8px; }
+  body.menu-open { overflow: hidden; }
+
+  .portfolio-grid { grid-template-columns: 1fr; gap: 11px; padding: 0 var(--side) 12px; }
+
+  .project-hero { margin-top: calc(-1 * var(--header-h)); height: calc(69.3vw + var(--header-h) - 68px); min-height: 0; }
+  .project-info { padding: 78px var(--side) 150px; }
+  .info-meta p + p { margin-top: 11px; }
+  .info-grid { grid-template-columns: 1fr; grid-template-areas: "title" "text" "meta"; }
+  .info-title { font-size: 33.54px; }
+  .info-text { margin-top: 33px; font-size: 19.9px; }
+  .info-meta { padding-top: 46px; }
+  .project-gallery { padding-top: 11px; gap: 11px; }
+  .gallery-row { grid-template-columns: 1fr !important; row-gap: 11px; }
+  .item-pagination { height: 78px; }
+  .item-pagination a { gap: 12px; }
+  .pag-title { font-size: 27.69px; }
+
+  .about-intro { grid-template-columns: 1fr; padding-top: 20px; }
+  .about-text { padding-top: 40px; }
+  .about-photo { grid-column: 1; margin-top: 40px; }
+  .page-about h1 { font-size: 44px; }
+  .about-text p { font-size: 19.9px; }
+  .about-skills, .about-clients { grid-template-columns: 1fr; padding-top: 70px; padding-bottom: 70px; }
+  .skills-cols { grid-template-columns: 1fr 1fr; padding-top: 32px; }
+  .skills-cols h4, .clients-note { font-size: 22px; }
+  .skills-cols h4 + h4 { margin-top: 20px; }
+  .logos { margin-top: 40px; }
+  :root { --logo-w: 36.5vw; --logo-gap: 8vw; }
+  .marquee-track { animation-duration: 40s; }
+
+  .footer-inner { height: auto; grid-template-columns: 1fr; justify-items: center; padding: 63px 0 70px; text-align: center; }
+  .footer-nav { order: 1; flex-direction: column; align-items: center; gap: 10px; font-size: 27.69px; }
+  .footer-nav a + a { font-size: inherit; }
+  .footer-mail { order: 2; margin-top: 38px; padding-top: 0; font-size: 16px; }
+  .footer-copy { order: 3; justify-self: center; width: auto; margin-top: 11px; }
+  .footer-copy br { display: none; }
+}
+
+/* ---------- texto a "escrever" (cabeçalho da home, topo dos projetos, Sobre mim) ----------
+   cada letra desvanece em sequência, curto (no máximo ~0,7 s no total), sem cursor */
+.js [data-type] .c { opacity: 0; transition: opacity .3s ease-out; transition-delay: var(--cd, 0s); }
+.js [data-type].go .c { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .js [data-type] .c { opacity: 1; transition: none; } }
+
+/* o fundo do botão só aparece quando o seu texto começa a escrever-se (--bd = atraso da 1.ª letra) */
+.typing-on .button[data-type] { background-color: transparent; transition: background-color .3s ease-out var(--bd, 0s); }
+.typing-on .button[data-type].go, .typing-on .button[data-type].typed { background-color: var(--btn-bg); }
+
+/* ---------- círculos flutuantes: voltar ao topo + contacto ---------- */
+/* tamanho dos círculos: 56 px em janelas normais, cresce com o ecrã (até 68 px); no telemóvel fica compacto (52 px) */
+.fab { --fab: clamp(56px, calc(2.25vw + 28px), 68px); position: fixed; right: clamp(14px, 2vw, 28px); bottom: clamp(14px, 2vw, 28px); z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.fab-btn {
+  width: var(--fab); height: var(--fab); border-radius: 50%; padding: 0; border: 0; cursor: pointer; display: grid; place-items: center;
+  background: #000; color: #fff; box-shadow: 0 4px 18px rgb(0 0 0 / .22); transition: transform .25s cubic-bezier(.2, .7, .2, 1), opacity .3s ease, box-shadow .25s ease;
+}
+.fab-btn:hover { transform: scale(1.07); box-shadow: 0 6px 22px rgb(0 0 0 / .28); }
+.fab-btn:active { transform: scale(.96); }
+.fab-btn svg { width: 22px; height: 22px; }
+.fab-contact { background: #fff; border: 0; }
+.fab-contact img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+/* discreto: vidro claro translúcido com seta cinzenta (visível tanto sobre o branco como sobre o rodapé preto) */
+.fab-top {
+  background: rgb(255 255 255 / .72); color: #4a4a4a; border: 1px solid rgb(0 0 0 / .14);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 1px 4px rgb(0 0 0 / .08);
+  opacity: 0; transform: translateY(8px) scale(.9); pointer-events: none; }
+.fab-top.show { opacity: .9; transform: none; pointer-events: auto; }
+.fab-top svg { width: calc(var(--fab) * .4); height: calc(var(--fab) * .4); }
+.fab-top.show:hover { opacity: 1; background: rgb(255 255 255 / .92); box-shadow: 0 2px 6px rgb(0 0 0 / .10); }
+.fab-top.show:hover { transform: scale(1.07); }
+
+/* ---------- pop-up de contacto ---------- */
+dialog.contact { border: 0; padding: 0; width: min(520px, calc(100vw - 28px)); max-height: calc(100dvh - 28px); background: #fff; color: #000; box-shadow: 0 20px 60px rgb(0 0 0 / .35); }
+dialog.contact::backdrop { background: rgb(0 0 0 / .55); }
+dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
+@keyframes contact-in { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+.contact-form { position: relative; padding: 36px 34px 30px; display: grid; gap: 8px; }
+.contact-form h2 { font: 500 var(--fs-h4)/1.171 var(--heading); letter-spacing: -.02em; margin: 0 0 4px; padding-right: 40px; }
+.contact-lead { margin: 0 0 10px; color: #444; }
+.contact-form label { font-size: 14px; margin-top: 8px; }
+.contact-form input[type="email"], .contact-form textarea {
+  font: 400 16px/1.4 var(--body); color: #000; background: #fff; border: 1px solid #000; border-radius: 0; padding: 12px 14px; width: 100%; resize: vertical;
+}
+.contact-form input:focus-visible, .contact-form textarea:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.contact-form [aria-invalid="true"] { border-color: #c0261c; box-shadow: 0 0 0 1px #c0261c; }
+.contact-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.contact-send { justify-self: start; margin-top: 14px; border: 0; cursor: pointer; }
+.contact-send[disabled] { opacity: .5; cursor: progress; }
+.contact-status { margin: 6px 0 0; min-height: 1.5em; font-size: 14px; }
+.contact-status.ok { color: #1a7f37; }
+.contact-status.err { color: #c0261c; }
+.contact-status a { text-decoration: underline; }
+.contact-close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer; }
+.contact-close svg { width: 20px; height: 20px; }
+.contact-close:hover { opacity: .6; }
+@media (max-width: 767px) {
+  .fab { --fab: 52px; }
+  dialog.contact { margin: auto auto 0; width: 100vw; max-width: 100vw; }
+  .contact-form { padding: 30px 22px 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fab-btn, .fab-top { transition: none; }
+  dialog.contact[open] { animation: none; }
+}
+
+/* botão de topo: ao passar o rato a seta sobe e sai pelo topo, e volta a entrar por baixo */
+.fab-top { overflow: hidden; }
+@keyframes arrow-loop {
+  0%   { transform: translateY(0); }
+  45%  { transform: translateY(calc(var(--fab) * -.8)); }
+  46%  { transform: translateY(calc(var(--fab) * .8)); }
+  100% { transform: translateY(0); }
+}
+.fab-top.show:hover svg, .fab-top.show:active svg { animation: arrow-loop .6s cubic-bezier(.4, 0, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .fab-top.show:hover svg, .fab-top.show:active svg { animation: none; } }
+
+/* ---------- scroll suave (Lenis) ---------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+/* o leitor do Vimeo continua clicável, apesar da regra dos iframes do scroll suave acima */
+.lenis.lenis-smooth iframe.vimeo-frame { pointer-events: auto; }
+/* camada transparente por cima do leitor (menos a faixa dos controlos): deixa a roda do rato fazer scroll suave; o clique faz play/pausa */
+.vimeo-shield { position: absolute; left: 0; right: 0; top: 0; bottom: 72px; cursor: pointer; }
+
+/* imagem de topo com gradiente em movimento (loop), nos tons da própria imagem */
+.hero-gradient { position: absolute; inset: 0; background: var(--hg); background-size: 400% 400%; opacity: .92; animation: hero-grad 14s ease-in-out infinite; pointer-events: none; }
+.hero-gradient::after { content: ""; position: absolute; inset: -20%; background: radial-gradient(40% 60% at 70% 30%, rgb(255 20 20 / .55), transparent 70%); animation: hero-glow 18s ease-in-out infinite alternate; }
+@keyframes hero-grad { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes hero-glow { from { transform: translate3d(-12%, -6%, 0) scale(1); } to { transform: translate3d(14%, 8%, 0) scale(1.25); } }
+@media (prefers-reduced-motion: reduce) { .hero-gradient, .hero-gradient::after { animation: none; } }
+
+/* manchas escuras desfocadas que atravessam a imagem de topo (cada uma com o seu percurso e a sua velocidade) */
+.hero-gradient .blob { position: absolute; display: block; border-radius: 50%; filter: blur(70px); mix-blend-mode: multiply; will-change: transform; }
+.hero-gradient .b1 { width: 26%; height: 130%; left: -10%; top: -15%; background: rgb(90 1 1 / .15); animation: blob-1 26s ease-in-out infinite alternate; }
+.hero-gradient .b2 { width: 22%; height: 110%; left: 38%; top: -5%; background: rgb(110 1 1 / .15); animation: blob-2 32s ease-in-out infinite alternate; }
+.hero-gradient .b3 { width: 30%; height: 100%; left: 62%; top: 10%; background: rgb(100 1 1 / .15); animation: blob-3 38s ease-in-out infinite alternate; }
+.hero-gradient .b4 { width: 18%; height: 90%; left: 20%; top: 30%; background: rgb(80 1 1 / .15); animation: blob-4 29s ease-in-out infinite alternate; }
+@keyframes blob-1 { from { transform: translate3d(0, 0, 0) scale(1); }      to { transform: translate3d(190%, 6%, 0) scale(1.3); } }
+@keyframes blob-2 { from { transform: translate3d(60%, 8%, 0) scale(1.1); } to { transform: translate3d(-150%, -10%, 0) scale(.8); } }
+@keyframes blob-3 { from { transform: translate3d(0, -6%, 0) scale(.9); }  to { transform: translate3d(-170%, 12%, 0) scale(1.25); } }
+@keyframes blob-4 { from { transform: translate3d(-40%, 10%, 0) scale(1); } to { transform: translate3d(330%, -14%, 0) scale(1.4); } }
+@media (prefers-reduced-motion: reduce) { .hero-gradient .blob { animation: none; } }
+
+/* grão de película animado por cima da imagem de topo (desenhado em WebGL pelo main.js) */
+.hero-grain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-grain-css { mix-blend-mode: overlay; pointer-events: none; background-size: 256px 256px; image-rendering: pixelated; }
+
+/* ---------- imagem com leitor do Vimeo (play por cima; ao carregar, o vídeo toca no próprio espaço) ---------- */
+.play-btn { position: absolute; left: 50%; top: 50%; width: clamp(64px, 7vw, 100px); aspect-ratio: 1; margin: 0; padding: 0; border: 0; background: none; transform: translate(-50%, -50%); display: grid; place-items: center; cursor: pointer; transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
+.play-btn svg { width: 100%; height: 100%; fill: #fff; stroke: #fff; filter: drop-shadow(0 2px 10px rgb(0 0 0 / .35)); }
+@media (hover: hover) { .play-btn:hover { transform: translate(-50%, -50%) scale(1.1); } }
+.play-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.vimeo-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+
+/* ---------- página 404 ---------- */
+.notfound { padding: calc(var(--header-h) + 6vw) var(--side) 10vw; text-align: center; }
+.notfound h1 { font: 700 var(--fs-h1)/1.15 var(--heading); letter-spacing: -.02em; }
+.notfound p { margin-top: 18px; font-size: var(--fs-lead); }
+.notfound .button { margin-top: 36px; }
