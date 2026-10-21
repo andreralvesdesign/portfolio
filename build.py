@@ -388,6 +388,6 @@ write("404.html", head("Página não encontrada — André Alves", "/", "Esta p�
 
 # ficheiros para o GitHub Pages
 write(".nojekyll", "")
-# write("CNAME", "www.andrealvesdesign.com" + chr(10))   # ativar só quando o DNS do domínio apontar para o GitHub Pages
+write("CNAME", "www.andrealvesdesign.com" + chr(10))
 
 print("ok")
