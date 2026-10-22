@@ -148,7 +148,9 @@ MAIL_SVG = '<svg viewBox="0 0 24 18" aria-hidden="true"><path fill-rule="evenodd
 LI_SVG = '<svg viewBox="19 17 28 28" aria-hidden="true"><path d="M20.4 44h5.4V26.6h-5.4V44zm2.7-26.1c-1.7 0-3.1 1.4-3.1 3.1 0 1.7 1.4 3.1 3.1 3.1 1.7 0 3.1-1.4 3.1-3.1 0-1.7-1.4-3.1-3.1-3.1zm16.4 8.3c-2.6 0-4.4 1.4-5.1 2.8h-.1v-2.4h-5.2V44h5.4v-8.6c0-2.3.4-4.5 3.2-4.5 2.8 0 2.8 2.6 2.8 4.6V44H46v-9.5c0-4.7-1-8.3-6.5-8.3z"/></svg>'
 CARET = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>'
 
-def head(title, prefix, desc):
+SITE_URL = "https://www.andrealvesdesign.com"   # endereço absoluto, necessário nas imagens de partilha (WhatsApp, LinkedIn, etc.)
+
+def head(title, prefix, desc, image="home.jpg", path="/"):
     return f'''<!doctype html>
 <html lang="pt-PT">
 <head>
@@ -164,9 +166,18 @@ def head(title, prefix, desc):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
+<link rel="canonical" href="{SITE_URL}{path}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="André Alves">
+<meta property="og:locale" content="pt_PT">
+<meta property="og:url" content="{SITE_URL}{path}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:image" content="{prefix}assets/capas/alvor.webp">
+<meta property="og:image" content="{SITE_URL}/assets/og/{image}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{prefix}assets/geral/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -273,7 +284,7 @@ for i, p in enumerate(PROJECTS):
       <img src="assets/{p["cover"]}" alt="{html.escape(p["title"])}" loading="{load}" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">{p["title"]}</span><span class="grid-meta"><strong>{t(p["cat"], p["cat_en"])}</strong></span></span></span>
     </a>''')
-write("index.html", head("André Alves", "", "Portfólio de André Alves, designer gráfico.") + f'''
+write("index.html", head("André Alves", "", "Portfólio de André Alves, designer gráfico.", "home.jpg", "/") + f'''
 <body class="page-home">
 {header("", "projetos")}
 <main id="conteudo">
@@ -342,7 +353,7 @@ for idx, p in enumerate(PROJECTS):
 </main>
 {footer(pre)}'''
     desc = html.unescape(p["text"])[:155].replace('"', "'")
-    write(f'{p["slug"]}/index.html', head(f'{p["title"]} - André Alves', pre, desc) + body)
+    write(f'{p["slug"]}/index.html', head(f'{p["title"]} - André Alves', pre, desc, f'{p["slug"]}.jpg', f'/{p["slug"]}/') + body)
     write(f'projetos/{p["slug"]}/index.html', redirect_page(f'/{p["slug"]}/'))   # endereço antigo (/projetos/nome/) continua a funcionar
 
 # ---------- sobre mim ----------
@@ -365,7 +376,7 @@ logo_set = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp
 logo_copy = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp" alt=""></li>' for l in LOGOS)
 logos = f'<ul class="marquee-track">{logo_set}</ul><ul class="marquee-track" aria-hidden="true">{logo_copy}</ul>'
 write("projetos/index.html", redirect_page("/"))
-write("sobre-mim/index.html", head("Sobre mim - André Alves", pre, "André Alves, designer gráfico licenciado em Design e Produção Gráfica.") + f'''
+write("sobre-mim/index.html", head("Sobre mim - André Alves", pre, "André Alves, designer gráfico licenciado em Design e Produção Gráfica.", "sobre-mim.jpg", "/sobre-mim/") + f'''
 <body class="page-about">
 {header(pre, "sobre")}
 <main id="conteudo">
