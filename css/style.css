@@ -77,7 +77,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .site-title { justify-self: start; font: 500 var(--fs-site-title)/1.2 var(--heading); letter-spacing: -.02em; text-decoration: none; }
 .site-nav { display: flex; gap: 11px; padding-bottom: 0; font-size: 18px; }   /* 16 px no original; +2 px */
 .site-nav a { text-decoration: none; line-height: 24px; padding: 1px 0 2px; }
-.site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.site-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (hover: hover) { .site-nav a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
 .header-actions { justify-self: end; display: flex; align-items: center; gap: 9px; font-size: 17px; }   /* meio caminho entre os 16 px de antes e os 18 px de "Projetos" e "Sobre mim" */
 .social { display: grid; place-items: center; width: 25px; height: 25px; }   /* caixa clicável; o desenho tem o tamanho do texto */
 .social svg { width: 16.5px; height: 16.5px; fill: currentColor; transform: translateY(-2px); }   /* fundo na linha de base do texto; sobe acima do topo do "P" */
@@ -85,7 +86,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* idioma: bandeira + nome; um clique passa para o idioma seguinte (sem menu) */
 .lang-btn { display: flex; align-items: center; gap: 7px; line-height: 24px; padding: 2px 0 2px 4px; cursor: pointer; }
 .lang-flag { display: block; width: 23px; height: 23px; flex: none; }
-.lang-btn:hover .lang-current { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (hover: hover) { .lang-btn:hover .lang-current { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
 .burger { display: none; }
 .mobile-menu { display: none; }
 
@@ -106,11 +107,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 42px;
   background: rgb(255 255 255 / .9); opacity: 0; transition: opacity .3s ease;   /* branco a 90%: a imagem vê-se levemente por baixo; o título mantém-se opaco */
 }
-.grid-item:hover .grid-overlay, .grid-item:focus-visible .grid-overlay { opacity: 1; }
+.grid-item:focus-visible .grid-overlay { opacity: 1; }
+@media (hover: hover) { .grid-item:hover .grid-overlay { opacity: 1; } }
 .grid-title { font: 700 var(--fs-card)/1.2 var(--heading); letter-spacing: -.02em; text-align: center; color: var(--ink); }
 /* o branco aparece logo; o título entra 0,17 s depois (e sai de imediato ao tirar o rato) */
 .grid-text { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; row-gap: 22px; padding: 0 42px; opacity: 0; transition: opacity .3s ease; }
-.grid-item:hover .grid-text, .grid-item:focus-visible .grid-text { opacity: 1; transition-delay: .17s; }
+.grid-item:focus-visible .grid-text { opacity: 1; transition-delay: .17s; }
+@media (hover: hover) { .grid-item:hover .grid-text { opacity: 1; transition-delay: .17s; } }
 /* dois blocos centrados: o nome do projeto e, um pouco abaixo, a informação (áreas em cima, data por baixo) */
 .grid-meta { display: grid; justify-items: center; gap: 2px; text-align: center; font-size: 15px; line-height: 22px; color: var(--ink); text-transform: uppercase; }
 .grid-meta strong { font-weight: 600; }
@@ -155,7 +158,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pag-prev .pag-title { text-align: left; }
 .pag-next { margin-left: auto; justify-content: flex-end; }
 .pag-next .pag-title { text-align: right; }
-.item-pagination a:hover .pag-title { opacity: .7; }
+@media (hover: hover) { .item-pagination a:hover .pag-title { opacity: .7; } }
 
 /* ---------- sobre mim ---------- */
 /* o cabeçalho fica por cima do topo desta secção, como no original */
@@ -171,7 +174,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   display: inline-block; margin-top: 55px; background: var(--btn-bg); color: var(--btn-fg); text-decoration: none;
   font: 500 16px/normal var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 16px 20.8px;
 }
-.button:hover { opacity: .8; }
+@media (hover: hover) { .button:hover { opacity: .8; } }
 /* botão claro, para fundos pretos (p.ex. ligação ao projeto real) */
 .button-light { --btn-bg: #fff; --btn-fg: #070707; margin-top: 44px; }
 
@@ -213,7 +216,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .footer-nav strong { font-weight: 700; }
 .footer-nav a + a { font-size: calc(1.375vw - 2.5px); }   /* SOBRE MIM: 17.3 · 23.9 px (PROJETOS: 18.4 · 25.2 px) */
 .footer-copy { justify-self: end; width: calc(10.83vw - 13px); text-align: center; line-height: 24px; }   /* 2 linhas a 1440, 1 linha a 1920 */
-.site-footer a:hover { opacity: .7; }
+@media (hover: hover) { .site-footer a:hover { opacity: .7; } }
 
 /* ---------- telemóvel (até 767 px, como o Squarespace) ---------- */
 @media (max-width: 767px) {
@@ -287,7 +290,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: var(--fab); height: var(--fab); border-radius: 50%; padding: 0; border: 0; cursor: pointer; display: grid; place-items: center;
   background: #000; color: #fff; box-shadow: 0 4px 18px rgb(0 0 0 / .22); transition: transform .25s cubic-bezier(.2, .7, .2, 1), opacity .3s ease, box-shadow .25s ease;
 }
-.fab-btn:hover { transform: scale(1.07); box-shadow: 0 6px 22px rgb(0 0 0 / .28); }
+@media (hover: hover) { .fab-btn:hover { transform: scale(1.07); box-shadow: 0 6px 22px rgb(0 0 0 / .28); } }
 .fab-btn:active { transform: scale(.96); }
 .fab-btn svg { width: 22px; height: 22px; }
 .fab-contact { background: #fff; border: 0; }
@@ -299,8 +302,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   opacity: 0; transform: translateY(8px) scale(.9); pointer-events: none; }
 .fab-top.show { opacity: .9; transform: none; pointer-events: auto; }
 .fab-top svg { width: calc(var(--fab) * .4); height: calc(var(--fab) * .4); }
-.fab-top.show:hover { opacity: 1; background: rgb(255 255 255 / .92); box-shadow: 0 2px 6px rgb(0 0 0 / .10); }
-.fab-top.show:hover { transform: scale(1.07); }
+@media (hover: hover) { .fab-top.show:hover { opacity: 1; background: rgb(255 255 255 / .92); box-shadow: 0 2px 6px rgb(0 0 0 / .10); } .fab-top.show:hover { transform: scale(1.07); } }
+
 
 /* ---------- pop-up de contacto ---------- */
 dialog.contact { border: 0; padding: 0; width: min(520px, calc(100vw - 28px)); max-height: calc(100dvh - 28px); background: #fff; color: #000; box-shadow: 0 20px 60px rgb(0 0 0 / .35); }
@@ -325,7 +328,7 @@ dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
 .contact-status a { text-decoration: underline; }
 .contact-close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer; }
 .contact-close svg { width: 20px; height: 20px; }
-.contact-close:hover { opacity: .6; }
+@media (hover: hover) { .contact-close:hover { opacity: .6; } }
 @media (max-width: 767px) {
   .fab { --fab: 52px; }
   dialog.contact { margin: auto auto 0; width: 100vw; max-width: 100vw; }
@@ -344,7 +347,8 @@ dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
   46%  { transform: translateY(calc(var(--fab) * .8)); }
   100% { transform: translateY(0); }
 }
-.fab-top.show:hover svg, .fab-top.show:active svg { animation: arrow-loop .6s cubic-bezier(.4, 0, .2, 1); }
+.fab-top.show:active svg { animation: arrow-loop .6s cubic-bezier(.4, 0, .2, 1); }
+@media (hover: hover) { .fab-top.show:hover svg { animation: arrow-loop .6s cubic-bezier(.4, 0, .2, 1); } }
 @media (prefers-reduced-motion: reduce) { .fab-top.show:hover svg, .fab-top.show:active svg { animation: none; } }
 
 /* ---------- scroll suave (Lenis) ---------- */
@@ -393,3 +397,6 @@ html.lenis, html.lenis body { height: auto; }
 .notfound h1 { font: 700 var(--fs-h1)/1.15 var(--heading); letter-spacing: -.02em; }
 .notfound p { margin-top: 18px; font-size: var(--fs-lead); }
 .notfound .button { margin-top: 36px; }
+
+/* ecrãs de toque: sem o clarão de seleção ao tocar nos botões do cabeçalho */
+.lang-btn, .burger, .social { -webkit-tap-highlight-color: transparent; }
