@@ -341,7 +341,7 @@ for idx, p in enumerate(PROJECTS):
 </main>
 {footer(pre)}'''
     desc = html.unescape(p["text"])[:155].replace('"', "'")
-    write(f'projetos/{p["slug"]}/index.html', head(f'{p["title"]} — André Alves', pre, desc) + body)
+    write(f'projetos/{p["slug"]}/index.html', head(f'{p["title"]} - André Alves', pre, desc) + body)
 
 # ---------- sobre mim ----------
 pre = "../"
@@ -362,7 +362,7 @@ col2 = "".join(f'<h4>{t(a, b)}</h4>' for a, b in SKILLS[5:])
 logo_set = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp" alt="{LOGO_ALT[l]}"></li>' for l in LOGOS)
 logo_copy = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp" alt=""></li>' for l in LOGOS)
 logos = f'<ul class="marquee-track">{logo_set}</ul><ul class="marquee-track" aria-hidden="true">{logo_copy}</ul>'
-write("sobre-mim/index.html", head("Sobre mim — André Alves", pre, "André Alves, designer gráfico licenciado em Design e Produção Gráfica.") + f'''
+write("sobre-mim/index.html", head("Sobre mim - André Alves", pre, "André Alves, designer gráfico licenciado em Design e Produção Gráfica.") + f'''
 <body class="page-about">
 {header(pre, "sobre")}
 <main id="conteudo">
@@ -387,7 +387,7 @@ write("sobre-mim/index.html", head("Sobre mim — André Alves", pre, "André Al
 {footer(pre)}''')
 
 # ---------- página 404 (o GitHub Pages serve este ficheiro em qualquer endereço que não exista; caminhos absolutos) ----------
-write("404.html", head("Página não encontrada — André Alves", "/", "Esta página não existe.") + f'''
+write("404.html", head("Página não encontrada - André Alves", "/", "Esta página não existe.") + f'''
 <body class="page-home">
 {header("/", "")}
 <main id="conteudo">
