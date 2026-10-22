@@ -188,19 +188,19 @@
     // Reserva sem WebGL (ou quando o browser não deixa ler a imagem, p.ex. ao abrir os ficheiros diretamente do disco):
     // camadas de ruído em mosaico, trocadas várias vezes por segundo, misturadas com a imagem.
     function fallbackGrain() {
-      var tiles = [], N = 8, S = 256;
+      var tiles = [], N = 8, S = 192;
       for (var k = 0; k < N; k++) {
         var c2 = doc.createElement("canvas"); c2.width = c2.height = S;
         var x = c2.getContext("2d"), d = x.createImageData(S, S);
-        for (var i = 0; i < d.data.length; i += 4) { var vv = 128 + (Math.random() + Math.random() - 1) * 110; d.data[i] = d.data[i + 1] = d.data[i + 2] = vv; d.data[i + 3] = 255; }
+        for (var i = 0; i < d.data.length; i += 4) { var vv = 128 + (Math.random() + Math.random() - 1) * 85; d.data[i] = d.data[i + 1] = d.data[i + 2] = vv; d.data[i + 3] = 255; }
         x.putImageData(d, 0, 0); tiles.push("url(" + c2.toDataURL("image/png") + ")");
       }
       var g = doc.createElement("div"); g.className = "hero-grain hero-grain-css"; g.setAttribute("aria-hidden", "true");
       g.style.opacity = String(intensity * 0.5);
       hero.appendChild(g);
       var n = 0, vis = true, timer = 0;
-      function tick() { n++; g.style.backgroundImage = tiles[n % N]; g.style.backgroundPosition = (Math.random() * S | 0) + "px " + (Math.random() * S | 0) + "px"; }
-      function run() { if (!timer) timer = setInterval(function () { if (vis) tick(); }, 42); }
+      function tick() { n++; g.style.backgroundImage = tiles[n % N]; g.style.backgroundPosition = (Math.random() * 288 | 0) + "px " + (Math.random() * 288 | 0) + "px"; }
+      function run() { if (!timer) timer = setInterval(function () { if (vis) tick(); }, 50); }
       tick(); run();
       if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; }).observe(hero);
     }
@@ -211,8 +211,10 @@
     if (!gl) { fallbackGrain(); return; }
     var vs = "attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }";
     var fs = "precision highp float;" +
-      "uniform sampler2D uImg; uniform vec2 uRes; uniform vec2 uImgSize; uniform vec2 uFocal; uniform float uTime; uniform float uNoise;" +
+      "uniform sampler2D uImg; uniform vec2 uRes; uniform vec2 uImgSize; uniform vec2 uFocal; uniform vec2 uSeed; uniform float uGrain; uniform float uNoise;" +
       "float h(vec2 c){ return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }" +
+      "float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);" +
+      "  return mix(mix(h(i), h(i + vec2(1.0, 0.0)), f.x), mix(h(i + vec2(0.0, 1.0)), h(i + vec2(1.0, 1.0)), f.x), f.y); }" +
       "void main(){" +
       "  float scale = max(uRes.x / uImgSize.x, uRes.y / uImgSize.y);" +
       "  vec2 d = uImgSize * scale; vec2 off = (uRes - d) * uFocal;" +
@@ -220,7 +222,8 @@
       "  vec2 uv = (px - off) / d; uv.y = 1.0 - uv.y;" +
       "  vec4 o = texture2D(uImg, uv);" +
       "  float luma = dot(o.rgb, vec3(0.299, 0.587, 0.114));" +
-      "  float g = (h(gl_FragCoord.xy + uTime) + h(gl_FragCoord.yx * 1.37 + uTime * 1.7) - 1.0) * 0.7;" +   // ruído triangular, centrado em 0
+      "  vec2 gp = gl_FragCoord.xy / uGrain;" +
+      "  float g = (vn(gp + uSeed) + vn(gp * 0.55 + uSeed * 1.7 + 31.7) - 1.0) * 1.1;" +   // grão com tamanho (não pixel a pixel), centrado em 0
       "  vec3 c = o.rgb * (1.0 + g * uNoise * (0.75 * luma - 1.0));" +
       "  gl_FragColor = vec4(c, 1.0);" +
       "}";
@@ -233,21 +236,21 @@
     var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     var loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var U = {}; ["uImg", "uRes", "uImgSize", "uFocal", "uTime", "uNoise"].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
-    var tex = gl.createTexture(), ready = false, visible = true, raf = 0, t = 0;
+    var U = {}; ["uImg", "uRes", "uImgSize", "uFocal", "uSeed", "uGrain", "uNoise"].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    var tex = gl.createTexture(), ready = false, visible = true, raf = 0, grainPx = 1.5;
     function resize() {
       var r = hero.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr));
+      cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr)); grainPx = 1.5 * dpr;
       gl.viewport(0, 0, cv.width, cv.height);
     }
     var last = 0;
     function frame(now) {
       raf = 0; if (!ready || !visible) return;
-      if (now - last < 15) { raf = requestAnimationFrame(frame); return; }          // no máximo ~60 imagens por segundo
+      if (now - last < 48) { raf = requestAnimationFrame(frame); return; }          // 20 imagens por segundo, como o grão de película (a 60 parecia ruído de TV)
       last = now;
-      t += 0.01;                                                                       // velocidade 100, como no original
+      
       gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform2f(U.uImgSize, img.naturalWidth, img.naturalHeight);
-      gl.uniform2f(U.uFocal, focal[0], focal[1]); gl.uniform1f(U.uTime, t); gl.uniform1f(U.uNoise, intensity);
+      gl.uniform2f(U.uFocal, focal[0], focal[1]); gl.uniform2f(U.uSeed, Math.random() * 500, Math.random() * 500); gl.uniform1f(U.uGrain, grainPx); gl.uniform1f(U.uNoise, intensity * 0.8);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       raf = requestAnimationFrame(frame);
     }
