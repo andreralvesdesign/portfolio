@@ -373,7 +373,7 @@ write("sobre-mim/index.html", head("Sobre mim - André Alves", pre, "André Alve
     <div class="about-text" data-type-group>
       <h1 data-type>{t("Olá, sou o André", "Hi, I'm André")}</h1>
 {ps}
-      <a class="button" data-type href="{pre}{CV}" target="_blank" rel="noopener">{t("Currículo", "Résumé")}</a>
+      <a class="button" data-type href="{pre}{CV}" target="_blank" rel="noopener">{t("Currículo", "CV")}</a>
     </div>
     <div class="about-photo fade clip clip-x"><img src="{pre}assets/geral/foto.webp" alt="André Alves"></div>
   </section>

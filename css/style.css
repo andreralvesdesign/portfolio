@@ -249,9 +249,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .item-pagination a { gap: 12px; }
   .pag-title { font-size: 27.69px; }
 
-  .about-intro { grid-template-columns: 1fr; padding-top: 20px; }
-  .about-text { padding-top: 40px; }
-  .about-photo { grid-column: 1; margin-top: 40px; }
+  .about-intro { grid-template-columns: 1fr; padding-top: 0; }   /* a foto começa logo abaixo do cabeçalho, como os projetos da página inicial */
+  .about-text { grid-row: 2; padding-top: 40px; }   /* o texto e o botão do currículo vêm depois da foto */
+  .about-photo { grid-column: 1; grid-row: 1; margin-top: 0; }
   .page-about h1 { font-size: 44px; }
   .about-text p { font-size: 19.9px; }
   .about-skills, .about-clients { grid-template-columns: 1fr; padding-top: 70px; padding-bottom: 70px; }
