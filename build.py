@@ -271,7 +271,7 @@ for i, p in enumerate(PROJECTS):
     load = "eager" if i < 2 else "lazy"
     tiles.append(f'''    <a class="grid-item fade clip" href="{p["slug"]}/">
       <img src="assets/{p["cover"]}" alt="{html.escape(p["title"])}" loading="{load}" decoding="async">
-      <span class="grid-overlay"><span class="grid-text"><span class="grid-title">{p["title"]}</span><span class="grid-meta"><strong>{t(p["cat"], p["cat_en"])}</strong><span>{t(p["date"], p["date_en"])}</span></span></span></span>
+      <span class="grid-overlay"><span class="grid-text"><span class="grid-title">{p["title"]}</span><span class="grid-meta"><strong>{t(p["cat"], p["cat_en"])}</strong></span></span></span>
     </a>''')
 write("index.html", head("André Alves", "", "Portfólio de André Alves, designer gráfico.") + f'''
 <body class="page-home">
