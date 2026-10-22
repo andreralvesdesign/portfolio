@@ -391,9 +391,9 @@
     function startAll() {
       if (running) return; running = true;
       vids.forEach(function (v) { v.pause(); try { v.currentTime = 0; } catch (e) {} });
-      (function waitReady(tries) {
+      (function waitReady(tries) {          // esperam que os três tenham dados, para arrancarem juntos (no máx. ~15 s)
         if (!running) return;
-        if (ready() || tries > 100) {
+        if (ready() || tries > 150) {
           vids.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
           timer = setInterval(check, 300);
         } else setTimeout(function () { waitReady(tries + 1); }, 100);
@@ -403,7 +403,7 @@
     function check() {
       var master = vids[0], dur = master.duration || 1;
       if (!ready()) { vids.forEach(function (v) { v.pause(); }); stalled = true; return; }   // se um estiver a carregar, esperam todos
-      if (stalled) { stalled = false; vids.slice(1).forEach(function (v) { v.currentTime = master.currentTime; }); vids.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }); return; }
+      if (stalled) { stalled = false; var tmin = Math.min.apply(null, vids.map(function (v) { return v.currentTime; })); vids.forEach(function (v) { try { v.currentTime = tmin; } catch (e) {} var p = v.play(); if (p && p.catch) p.catch(function () {}); }); return; }   // retomam todos do ponto mais atrasado, que todos já têm em memória
       vids.slice(1).forEach(function (v) {
         var d = Math.abs(v.currentTime - master.currentTime); d = Math.min(d, dur - d);
         if (d > 0.05) v.currentTime = master.currentTime;

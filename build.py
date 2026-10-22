@@ -21,7 +21,7 @@ CONTACT_ENDPOINT = "https://api.web3forms.com/submit"
 # A chave é pública por desenho, pode ficar no site. Com o Formspree deixa este campo vazio.
 CONTACT_KEY = "8b20de56-e4b6-4457-b3f6-b414b2d31c4d"   # chave pública do Web3Forms (pode ficar no site)
 LINKEDIN = "https://www.linkedin.com/in/andreralves2014/"
-CV = "https://www.andrealvesdesign.com/s/Curriculo-Andre-Fernandes-Resende-Pereira-Alves.pdf"
+CV = "assets/curriculo/Curr%C3%ADculo%20-%20Andr%C3%A9%20Resende%20Alves.pdf"   # ficheiro em assets/curriculo (caminho relativo; ver {pre} no botão)
 
 WIDE = (1223, 742)    # formato dos vídeos e das imagens grandes sozinhas (um pouco mais alto que 16:9; o vídeo é cortado ligeiramente nos lados)
 # altura das linhas com duas imagens: igual à linha manual + cartão do Unlock (1223 x 553); muda também em css/style.css (.row-pair)
@@ -179,10 +179,10 @@ def header(prefix, active):
     a2 = ' aria-current="page"' if active == "sobre" else ""
     return f'''<a class="skip" href="#conteudo">{t("Saltar para o conteúdo", "Skip to content")}</a>
 <header class="site-header">
-  <a class="site-title" href="{prefix}index.html">André Alves</a>
+  <a class="site-title" href="{prefix or "./"}">André Alves</a>
   <nav class="site-nav" aria-label="Principal">
-    <a href="{prefix}index.html"{a1}>{t("Projetos", "Projects")}</a>
-    <a href="{prefix}sobre-mim/index.html"{a2}>{t("Sobre mim", "About me")}</a>
+    <a href="{prefix or "./"}"{a1}>{t("Projetos", "Projects")}</a>
+    <a href="{prefix}sobre-mim/"{a2}>{t("Sobre mim", "About me")}</a>
   </nav>
   <div class="header-actions">
     <a class="social social-mail" href="mailto:{EMAIL}" aria-label="Email">{MAIL_SVG}</a>
@@ -199,8 +199,8 @@ def header(prefix, active):
 </header>
 <div class="mobile-menu" hidden>
   <nav aria-label="Menu">
-    <a href="{prefix}index.html">{t("Projetos", "Projects")}</a>
-    <a href="{prefix}sobre-mim/index.html">{t("Sobre mim", "About me")}</a>
+    <a href="{prefix or "./"}">{t("Projetos", "Projects")}</a>
+    <a href="{prefix}sobre-mim/">{t("Sobre mim", "About me")}</a>
   </nav>
   <div class="mobile-menu-foot">
     <a class="social social-mail" href="mailto:{EMAIL}" aria-label="Email">{MAIL_SVG}</a>
@@ -213,7 +213,7 @@ def footer(prefix):
     return f'''<footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-mail"><a href="mailto:{EMAIL}">{EMAIL}</a></p>
-    <p class="footer-nav"><a href="{prefix}index.html"><strong>{t("PROJETOS", "PROJECTS")}</strong></a><a href="{prefix}sobre-mim/index.html"><strong>{t("SOBRE MIM", "ABOUT ME")}</strong></a></p>
+    <p class="footer-nav"><a href="{prefix or "./"}"><strong>{t("PROJETOS", "PROJECTS")}</strong></a><a href="{prefix}sobre-mim/"><strong>{t("SOBRE MIM", "ABOUT ME")}</strong></a></p>
     <p class="footer-copy">© André Alves, 2026</p>
   </div>
 </footer>
@@ -241,6 +241,11 @@ def footer(prefix):
 </html>
 '''
 
+def poster_bg(m, prefix):
+    """vídeos: a imagem de preview também fica de fundo do espaço, para aparecer logo, mesmo antes de o leitor de vídeo estar pronto"""
+    if m["t"] != "video": return ""
+    return f';background:url({prefix}assets/{m["src"][:-4]}-poster.webp) center/cover'
+
 def media(m, prefix, cls=""):
     src = prefix + "assets/" + m["src"]
     if m["t"] == "video":
@@ -263,7 +268,7 @@ def write(path, content):
 tiles = []
 for i, p in enumerate(PROJECTS):
     load = "eager" if i < 2 else "lazy"
-    tiles.append(f'''    <a class="grid-item fade clip" href="projetos/{p["slug"]}/index.html">
+    tiles.append(f'''    <a class="grid-item fade clip" href="projetos/{p["slug"]}/">
       <img src="assets/{p["cover"]}" alt="{html.escape(p["title"])}" loading="{load}" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">{p["title"]}</span><span class="grid-meta"><strong>{t(p["cat"], p["cat_en"])}</strong><span>{t(p["date"], p["date_en"])}</span></span></span></span>
     </a>''')
@@ -290,7 +295,7 @@ for idx, p in enumerate(PROJECTS):
         # restantes imagens: proporção do layout original
         if len(r) == 1 and r[0]["t"] == "img" and not r[0].get("exact"):
             r = [dict(r[0], w=WIDE[0], h=WIDE[1])]
-        items = "".join(f'<div class="gallery-item fade clip" style="aspect-ratio:{str(WIDE[0]) + "/" + str(WIDE[1]) if (m["t"] == "video" and not m.get("exact")) else str(m["w"]) + "/" + str(m["h"])}">{media(m, pre)}</div>' for m in r)
+        items = "".join(f'<div class="gallery-item fade clip" style="aspect-ratio:{str(WIDE[0]) + "/" + str(WIDE[1]) if (m["t"] == "video" and not m.get("exact")) else str(m["w"]) + "/" + str(m["h"])}{poster_bg(m, pre)}">{media(m, pre)}</div>' for m in r)
         # duas imagens lado a lado: todas com a mesma altura da linha manual + cartão (PAIR_ROW)
         pair = len(r) == 2 and all(m["t"] == "img" and not m.get("exact") for m in r)
         cls = "gallery-row row-pair" if pair else "gallery-row"
@@ -306,8 +311,8 @@ for idx, p in enumerate(PROJECTS):
         hero_attrs += f' data-grain="{p["hero_grain"]}"'
     if p.get("hero_gradient"):   # gradiente animado em loop por cima da imagem de topo, nos tons dela
         hero_html += '<div class="hero-gradient" aria-hidden="true" style="--hg:linear-gradient(115deg,' + ",".join(p["hero_gradient"]) + ')"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>'
-    pag_prev = (f'''<a class="pag-prev" href="../{prev["slug"]}/index.html"><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="7.3,14.7 2.5,8 7.3,1.2"/></svg><span class="vh">{t("Anterior", "Previous")}</span><span class="pag-title">{prev["title"]}</span></a>''' if prev else "")
-    pag_next = (f'''<a class="pag-next" href="../{nxt["slug"]}/index.html"><span class="vh">{t("Próximo", "Next")}</span><span class="pag-title">{nxt["title"]}</span><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="1.6,1.2 6.5,7.9 1.6,14.7"/></svg></a>''' if nxt else "")
+    pag_prev = (f'''<a class="pag-prev" href="../{prev["slug"]}/"><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="7.3,14.7 2.5,8 7.3,1.2"/></svg><span class="vh">{t("Anterior", "Previous")}</span><span class="pag-title">{prev["title"]}</span></a>''' if prev else "")
+    pag_next = (f'''<a class="pag-next" href="../{nxt["slug"]}/"><span class="vh">{t("Próximo", "Next")}</span><span class="pag-title">{nxt["title"]}</span><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="1.6,1.2 6.5,7.9 1.6,14.7"/></svg></a>''' if nxt else "")
     project_link = (f'        <a class="button button-light" data-type href="{p["link"]}" target="_blank" rel="noopener">{t(p["link_pt"], p["link_en"])}</a>{chr(10)}' if p.get("link") else "")
     side_open, side_close = ('      <div class="info-side">'+chr(10), '      </div>'+chr(10)) if p.get("link") else ("", "")
     h2 = p.get("h2", p["title"].upper() if p["slug"] != "unlock-the-magic" else p["title"])
@@ -365,7 +370,7 @@ write("sobre-mim/index.html", head("Sobre mim — André Alves", pre, "André Al
     <div class="about-text" data-type-group>
       <h1 data-type>{t("Olá, sou o André", "Hi, I'm André")}</h1>
 {ps}
-      <a class="button" data-type href="{CV}" target="_blank" rel="noopener">{t("Currículo", "Résumé")}</a>
+      <a class="button" data-type href="{pre}{CV}" target="_blank" rel="noopener">{t("Currículo", "Résumé")}</a>
     </div>
     <div class="about-photo fade clip clip-x"><img src="{pre}assets/geral/foto.webp" alt="André Alves"></div>
   </section>
@@ -389,7 +394,7 @@ write("404.html", head("Página não encontrada — André Alves", "/", "Esta p�
   <section class="notfound">
     <h1>{t("Página não encontrada", "Page not found")}</h1>
     <p>{t("O endereço que procuras não existe ou mudou de sítio.", "The page you are looking for does not exist or has moved.")}</p>
-    <a class="button" href="/index.html">{t("Ver projetos", "View projects")}</a>
+    <a class="button" href="/">{t("Ver projetos", "View projects")}</a>
   </section>
 </main>
 {footer("/")}''')
