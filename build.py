@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Gera o site (réplica do andrealvesdesign.com) a partir dos dados abaixo.
-Correr:  python build.py   (cria index.html, sobre-mim/ e projetos/)
+Correr:  python build.py   (cria index.html, sobre-mim/ e uma pasta por projeto; projetos/ só tem redirecionamentos dos endereços antigos)
 
 Para mudar textos, ordem de imagens ou acrescentar um projeto, edita PROJECTS
 e volta a correr. Cada linha da galeria (rows) é uma lista de peças lado a lado;
@@ -187,13 +187,7 @@ def header(prefix, active):
   <div class="header-actions">
     <a class="social social-mail" href="mailto:{EMAIL}" aria-label="Email">{MAIL_SVG}</a>
     <a class="social" href="{LINKEDIN}" target="_blank" rel="noopener" aria-label="LinkedIn">{LI_SVG}</a>
-    <div class="lang">
-      <button type="button" class="lang-btn" aria-haspopup="true" aria-expanded="false"><span class="lang-current">Português</span>{CARET}</button>
-      <ul class="lang-menu" hidden>
-        <li><button type="button" data-set-lang="pt">Português</button></li>
-        <li><button type="button" data-set-lang="en">English</button></li>
-      </ul>
-    </div>
+    <button type="button" class="lang-btn" data-flag-pt="{prefix}assets/bandeiras_idiomas/portugal_16397715.svg" data-flag-en="{prefix}assets/bandeiras_idiomas/united-kingdom_555417.svg" aria-label="Mudar idioma para English"><img class="lang-flag" src="{prefix}assets/bandeiras_idiomas/portugal_16397715.svg" alt="" width="24" height="24"><span class="lang-current">Português</span></button>
   </div>
   <button type="button" class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
 </header>
@@ -205,7 +199,6 @@ def header(prefix, active):
   <div class="mobile-menu-foot">
     <a class="social social-mail" href="mailto:{EMAIL}" aria-label="Email">{MAIL_SVG}</a>
     <a class="social" href="{LINKEDIN}" target="_blank" rel="noopener" aria-label="LinkedIn">{LI_SVG}</a>
-    <button type="button" data-set-lang="pt">PT</button><button type="button" data-set-lang="en">EN</button>
   </div>
 </div>'''
 
@@ -259,6 +252,14 @@ def media(m, prefix, cls=""):
         img += f'<button class="play-btn" type="button" data-vimeo="{m["vimeo"]}" aria-label="Reproduzir vídeo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5 19 12 7 19.5z" stroke-linejoin="round" stroke-width="1.6"/></svg></button>'
     return img
 
+def redirect_page(target):
+    """página mínima que leva para o endereço novo (o GitHub Pages não tem redirecionamentos de servidor)"""
+    url = "https://www.andrealvesdesign.com" + target
+    return (f'<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><title>A redirecionar…</title>'
+            f'<meta name="robots" content="noindex"><link rel="canonical" href="{url}">'
+            f'<meta http-equiv="refresh" content="0; url={target}"><script>location.replace("{target}")</script></head>'
+            f'<body><p><a href="{target}">{url}</a></p></body></html>')
+
 def write(path, content):
     full = os.path.join(ROOT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -268,7 +269,7 @@ def write(path, content):
 tiles = []
 for i, p in enumerate(PROJECTS):
     load = "eager" if i < 2 else "lazy"
-    tiles.append(f'''    <a class="grid-item fade clip" href="projetos/{p["slug"]}/">
+    tiles.append(f'''    <a class="grid-item fade clip" href="{p["slug"]}/">
       <img src="assets/{p["cover"]}" alt="{html.escape(p["title"])}" loading="{load}" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">{p["title"]}</span><span class="grid-meta"><strong>{t(p["cat"], p["cat_en"])}</strong><span>{t(p["date"], p["date_en"])}</span></span></span></span>
     </a>''')
@@ -284,7 +285,7 @@ write("index.html", head("André Alves", "", "Portfólio de André Alves, design
 
 # ---------- projetos ----------
 for idx, p in enumerate(PROJECTS):
-    pre = "../../"
+    pre = "../"
     prev = PROJECTS[idx - 1] if idx > 0 else None                  # o primeiro projeto não tem "anterior"
     nxt = PROJECTS[idx + 1] if idx < len(PROJECTS) - 1 else None   # o último não tem "próximo"
     rows = []
@@ -341,7 +342,8 @@ for idx, p in enumerate(PROJECTS):
 </main>
 {footer(pre)}'''
     desc = html.unescape(p["text"])[:155].replace('"', "'")
-    write(f'projetos/{p["slug"]}/index.html', head(f'{p["title"]} - André Alves', pre, desc) + body)
+    write(f'{p["slug"]}/index.html', head(f'{p["title"]} - André Alves', pre, desc) + body)
+    write(f'projetos/{p["slug"]}/index.html', redirect_page(f'/{p["slug"]}/'))   # endereço antigo (/projetos/nome/) continua a funcionar
 
 # ---------- sobre mim ----------
 pre = "../"
@@ -362,6 +364,7 @@ col2 = "".join(f'<h4>{t(a, b)}</h4>' for a, b in SKILLS[5:])
 logo_set = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp" alt="{LOGO_ALT[l]}"></li>' for l in LOGOS)
 logo_copy = "".join(f'<li class="logo"><img src="{pre}assets/geral/logos/{l}.webp" alt=""></li>' for l in LOGOS)
 logos = f'<ul class="marquee-track">{logo_set}</ul><ul class="marquee-track" aria-hidden="true">{logo_copy}</ul>'
+write("projetos/index.html", redirect_page("/"))
 write("sobre-mim/index.html", head("Sobre mim - André Alves", pre, "André Alves, designer gráfico licenciado em Design e Produção Gráfica.") + f'''
 <body class="page-about">
 {header(pre, "sobre")}

@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&family=Roboto:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610221012">
+<link rel="stylesheet" href="css/style.css?v=202610221036">
 </head>
 <body class="page-home">
 <a class="skip" href="#conteudo"><span data-en="Skip to content">Saltar para o conteúdo</span></a>
@@ -33,13 +33,7 @@
   <div class="header-actions">
     <a class="social social-mail" href="mailto:andreralvesdesign@gmail.com" aria-label="Email"><svg viewBox="0 0 24 18" aria-hidden="true"><path fill-rule="evenodd" d="M2 0h20a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM3 3.2l9 7 9-7v1.9l-9 7-9-7z"/></svg></a>
     <a class="social" href="https://www.linkedin.com/in/andreralves2014/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="19 17 28 28" aria-hidden="true"><path d="M20.4 44h5.4V26.6h-5.4V44zm2.7-26.1c-1.7 0-3.1 1.4-3.1 3.1 0 1.7 1.4 3.1 3.1 3.1 1.7 0 3.1-1.4 3.1-3.1 0-1.7-1.4-3.1-3.1-3.1zm16.4 8.3c-2.6 0-4.4 1.4-5.1 2.8h-.1v-2.4h-5.2V44h5.4v-8.6c0-2.3.4-4.5 3.2-4.5 2.8 0 2.8 2.6 2.8 4.6V44H46v-9.5c0-4.7-1-8.3-6.5-8.3z"/></svg></a>
-    <div class="lang">
-      <button type="button" class="lang-btn" aria-haspopup="true" aria-expanded="false"><span class="lang-current">Português</span><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
-      <ul class="lang-menu" hidden>
-        <li><button type="button" data-set-lang="pt">Português</button></li>
-        <li><button type="button" data-set-lang="en">English</button></li>
-      </ul>
-    </div>
+    <button type="button" class="lang-btn" data-flag-pt="assets/bandeiras_idiomas/portugal_16397715.svg" data-flag-en="assets/bandeiras_idiomas/united-kingdom_555417.svg" aria-label="Mudar idioma para English"><img class="lang-flag" src="assets/bandeiras_idiomas/portugal_16397715.svg" alt="" width="24" height="24"><span class="lang-current">Português</span></button>
   </div>
   <button type="button" class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
 </header>
@@ -51,32 +45,31 @@
   <div class="mobile-menu-foot">
     <a class="social social-mail" href="mailto:andreralvesdesign@gmail.com" aria-label="Email"><svg viewBox="0 0 24 18" aria-hidden="true"><path fill-rule="evenodd" d="M2 0h20a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM3 3.2l9 7 9-7v1.9l-9 7-9-7z"/></svg></a>
     <a class="social" href="https://www.linkedin.com/in/andreralves2014/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="19 17 28 28" aria-hidden="true"><path d="M20.4 44h5.4V26.6h-5.4V44zm2.7-26.1c-1.7 0-3.1 1.4-3.1 3.1 0 1.7 1.4 3.1 3.1 3.1 1.7 0 3.1-1.4 3.1-3.1 0-1.7-1.4-3.1-3.1-3.1zm16.4 8.3c-2.6 0-4.4 1.4-5.1 2.8h-.1v-2.4h-5.2V44h5.4v-8.6c0-2.3.4-4.5 3.2-4.5 2.8 0 2.8 2.6 2.8 4.6V44H46v-9.5c0-4.7-1-8.3-6.5-8.3z"/></svg></a>
-    <button type="button" data-set-lang="pt">PT</button><button type="button" data-set-lang="en">EN</button>
   </div>
 </div>
 <main id="conteudo">
   <div class="portfolio-grid">
-    <a class="grid-item fade clip" href="projetos/unlock-the-magic/">
+    <a class="grid-item fade clip" href="unlock-the-magic/">
       <img src="assets/capas/unlock.webp" alt="UNLOCK The Magic" loading="eager" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">UNLOCK The Magic</span><span class="grid-meta"><strong><span data-en="BRANDING / VIDEO EDITING / E-LEARNING">BRANDING / EDIÇÃO DE VÍDEO / E-LEARNING</span></strong><span><span data-en="NOVEMBER 2025">NOVEMBRO 2025</span></span></span></span></span>
     </a>
-    <a class="grid-item fade clip" href="projetos/worten-wave/">
+    <a class="grid-item fade clip" href="worten-wave/">
       <img src="assets/capas/wave.webp" alt="Worten Wave" loading="eager" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">Worten Wave</span><span class="grid-meta"><strong><span data-en="BRANDING / VIDEO EDITING / E-LEARNING">BRANDING / EDIÇÃO DE VÍDEO / E-LEARNING</span></strong><span><span data-en="JUNE 2022">JUNHO 2022</span></span></span></span></span>
     </a>
-    <a class="grid-item fade clip" href="projetos/ribeira-palace/">
+    <a class="grid-item fade clip" href="ribeira-palace/">
       <img src="assets/capas/ribeira.webp" alt="Ribeira Palace" loading="lazy" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">Ribeira Palace</span><span class="grid-meta"><strong><span data-en="GRAPHIC DESIGN / MULTIMEDIA / E-LEARNING">DESIGN GRÁFICO / MULTIMÉDIA / E-LEARNING</span></strong><span><span data-en="OCTOBER 2026">OUTUBRO 2026</span></span></span></span></span>
     </a>
-    <a class="grid-item fade clip" href="projetos/direct-padel/">
+    <a class="grid-item fade clip" href="direct-padel/">
       <img src="assets/capas/padel.webp" alt="Direct Padel" loading="lazy" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">Direct Padel</span><span class="grid-meta"><strong>REBRANDING / UI</strong><span><span data-en="MARCH 2026">MARÇO 2026</span></span></span></span></span>
     </a>
-    <a class="grid-item fade clip" href="projetos/alvor/">
+    <a class="grid-item fade clip" href="alvor/">
       <img src="assets/capas/alvor.webp" alt="Alvor" loading="lazy" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">Alvor</span><span class="grid-meta"><strong>BRANDING / UI</strong><span><span data-en="JUNE 2026">JUNHO 2026</span></span></span></span></span>
     </a>
-    <a class="grid-item fade clip" href="projetos/full-fill/">
+    <a class="grid-item fade clip" href="full-fill/">
       <img src="assets/capas/fullfill.webp" alt="FULL FILL" loading="lazy" decoding="async">
       <span class="grid-overlay"><span class="grid-text"><span class="grid-title">FULL FILL</span><span class="grid-meta"><strong><span data-en="GRAPHIC DESIGN / VIDEO EDITING / SOCIAL MEDIA">DESIGN GRÁFICO / EDIÇÃO DE VÍDEO / SOCIAL MEDIA</span></strong><span>2021 - 2026</span></span></span></span>
     </a>
@@ -108,6 +101,6 @@
   </form>
 </dialog>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
-<script src="js/main.js?v=202610221012"></script>
+<script src="js/main.js?v=202610221036"></script>
 </body>
 </html>
