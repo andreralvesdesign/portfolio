@@ -379,43 +379,61 @@
     doc.querySelectorAll("video:not([data-sync])").forEach(function (v) { vio.observe(v); });
   }
 
-  /* vídeos sincronizados (antes e depois): todos do mesmo grupo têm exatamente a mesma duração,
-     por isso arrancam juntos, repetem juntos e são realinhados se algum se atrasar */
+  /* vídeos sincronizados (antes e depois): os do mesmo grupo têm exatamente a mesma duração.
+     São descarregados INTEIROS (~1 MB cada) em segundo plano logo depois de a página abrir e tocam a partir da memória:
+     arrancam juntos, sem paragens para carregar. Depois só se corrigem com um pequeno acelerar/abrandar, nunca com saltos. */
   var syncGroups = {};
   doc.querySelectorAll("video[data-sync]").forEach(function (v) {
     var k = v.getAttribute("data-sync"); (syncGroups[k] = syncGroups[k] || []).push(v);
   });
   Object.keys(syncGroups).forEach(function (k) {
-    var vids = syncGroups[k], visible = 0, running = false, timer = 0;
-    function ready() { return vids.every(function (v) { return v.readyState >= 3; }); }
-    function startAll() {
-      if (running) return; running = true;
-      vids.forEach(function (v) { v.pause(); try { v.currentTime = 0; } catch (e) {} });
-      (function waitReady(tries) {          // esperam que os três tenham dados, para arrancarem juntos (no máx. ~15 s)
-        if (!running) return;
-        if (ready() || tries > 150) {
-          vids.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
-          timer = setInterval(check, 300);
-        } else setTimeout(function () { waitReady(tries + 1); }, 100);
-      })(0);
-    }
-    function stopAll() { running = false; clearInterval(timer); vids.forEach(function (v) { v.pause(); }); }
-    function check() {
-      var master = vids[0], dur = master.duration || 1;
-      if (!ready()) { vids.forEach(function (v) { v.pause(); }); stalled = true; return; }   // se um estiver a carregar, esperam todos
-      if (stalled) { stalled = false; var tmin = Math.min.apply(null, vids.map(function (v) { return v.currentTime; })); vids.forEach(function (v) { try { v.currentTime = tmin; } catch (e) {} var p = v.play(); if (p && p.catch) p.catch(function () {}); }); return; }   // retomam todos do ponto mais atrasado, que todos já têm em memória
-      vids.slice(1).forEach(function (v) {
-        var d = Math.abs(v.currentTime - master.currentTime); d = Math.min(d, dur - d);
-        if (d > 0.05) v.currentTime = master.currentTime;
+    var vids = syncGroups[k], running = false, timer = 0, startedAt = 0, loading = null;
+    function fetchOne(v) {
+      var url = v.getAttribute("data-src");
+      return fetch(url, { priority: "low" }).then(function (r) { if (!r.ok) throw new Error("http"); return r.blob(); }).then(function (blob) {
+        return new Promise(function (resolve) {
+          v.preload = "auto";
+          v.addEventListener("canplaythrough", function f() { v.removeEventListener("canplaythrough", f); resolve(); });
+          v.src = URL.createObjectURL(blob); v.load();
+        });
       });
     }
-    var stalled = false;
+    function loadAll() {
+      if (!loading) loading = Promise.all(vids.map(fetchOne)).catch(function () {   // sem fetch/blob: carrega pelo método normal
+        vids.forEach(function (v) { if (!v.getAttribute("src")) { v.preload = "auto"; v.src = v.getAttribute("data-src"); } });
+        return new Promise(function (resolve) { setTimeout(resolve, 2500); });
+      });
+      return loading;
+    }
+    function playAll() { vids.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }); }
+    function startAll() {
+      if (running) return; running = true;
+      loadAll().then(function () {
+        if (!running) return;
+        try { vids.forEach(function (v) { v.currentTime = 0; v.playbackRate = 1; }); } catch (e) {}
+        playAll(); startedAt = Date.now();
+        timer = setInterval(check, 400);
+      });
+    }
+    function stopAll() { running = false; clearInterval(timer); vids.forEach(function (v) { v.pause(); v.playbackRate = 1; }); }
+    function check() {
+      if (Date.now() - startedAt < 1500) return;                   // deixa estabilizar logo depois de arrancar
+      var master = vids[0], dur = master.duration || 1;
+      vids.slice(1).forEach(function (v) {
+        if (v.paused && !v.ended) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        var d = v.currentTime - master.currentTime;                // >0: está à frente do primeiro
+        if (d > dur / 2) d -= dur; else if (d < -dur / 2) d += dur; // o vídeo repete, por isso a diferença é circular
+        if (Math.abs(d) > 0.6) { try { v.currentTime = master.currentTime; } catch (e) {} v.playbackRate = 1; }   // desvio grande (raro): um único salto
+        else if (Math.abs(d) > 0.06) v.playbackRate = 1 - Math.max(-0.08, Math.min(0.08, d * 0.5));            // desvio pequeno: acelera ou abranda um pouco
+        else v.playbackRate = 1;
+      });
+    }
+    window.addEventListener("load", function () { setTimeout(loadAll, 1200); });   // descarrega já em segundo plano, antes de chegares lá abaixo
     if ("IntersectionObserver" in window) {
       var sio = new IntersectionObserver(function (es) {
         es.forEach(function (e) { e.target._vis = e.isIntersecting; });
-        visible = vids.filter(function (v) { return v._vis; }).length;   // quantos do grupo estão à vista
-        if (visible > 0) startAll(); else stopAll();
-      }, { rootMargin: "700px 0px" });
+        if (vids.some(function (v) { return v._vis; })) startAll(); else stopAll();
+      }, { rootMargin: "400px 0px" });
       vids.forEach(function (v) { sio.observe(v); });
     } else startAll();
   });

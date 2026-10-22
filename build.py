@@ -251,7 +251,7 @@ def media(m, prefix, cls=""):
     if m["t"] == "video":
         poster = src[:-4] + "-poster.webp"
         if m.get("sync"):   # vídeos sincronizados: o main.js arranca-os todos ao mesmo tempo (sem autoplay individual)
-            return f'<video class="{cls}" src="{src}" poster="{poster}" data-sync="{m["sync"]}" muted loop playsinline preload="auto" aria-hidden="true"></video>'
+            return f'<video class="{cls}" data-src="{src}" poster="{poster}" data-sync="{m["sync"]}" muted loop playsinline preload="none" aria-hidden="true"></video>'
         return f'<video class="{cls}" src="{src}" poster="{poster}" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>'
     alt = html.escape(m.get("alt", ""), quote=True)
     img = f'<img class="{cls}" src="{src}" alt="{alt}" loading="lazy" decoding="async">'
