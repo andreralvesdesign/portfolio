@@ -236,7 +236,7 @@ def footer(prefix):
 <dialog class="contact gate" id="contact" aria-labelledby="contact-title" data-lenis-prevent>
   <form class="contact-form" data-endpoint="{CONTACT_ENDPOINT}" data-key="{CONTACT_KEY}" data-to="{EMAIL}" novalidate>
     <button type="button" class="contact-close" data-close-contact aria-label="Fechar" data-aria-en="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-    <span class="gate-icon"><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="gate-flap" d="m4.5 7.5 7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="gate-icon"><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4.5 7.5 7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
     <h2 id="contact-title">{t("Entre em contacto", "Get in touch")}</h2>
     <p class="contact-lead">{t("<span class='nw'>Indique o seu email e escreva</span> <span class='nw'>a sua mensagem.</span>", "<span class='nw'>Please provide your email address</span> <span class='nw'>and write your message.</span>")}</p>
     <label for="c-email">{t("O seu email", "Your email")}</label>

@@ -330,12 +330,6 @@ dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
 .gate .contact-status { min-height: 1.4em; margin: 10px 0 0; }
 .gate-help { margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #e3e3e3; font-size: 14px; color: #555; }
 .gate-shackle { transform-box: view-box; transform-origin: 16px 10.5px; animation: gate-unlock 3.6s ease-in-out infinite; }
-.gate-flap { transform-box: view-box; transform-origin: 12px 7.5px; animation: gate-flap 3.6s ease-in-out infinite; }
-@keyframes gate-flap {
-  0%, 30% { transform: none; }
-  50%, 72% { transform: scaleY(-.55); }
-  90%, 100% { transform: none; }
-}
 @keyframes gate-unlock {
   0%, 30% { transform: none; }
   42% { transform: translateY(-1.1px); }
@@ -343,7 +337,7 @@ dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
   84% { transform: translateY(-1.1px); }
   94%, 100% { transform: none; }
 }
-@media (prefers-reduced-motion: reduce) { .gate-shackle, .gate-flap { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .gate-shackle, #contact .gate-lock { animation: none; } }
 .gate-help a { text-decoration: underline; color: #000; }
 .contact-send { justify-self: start; margin-top: 14px; border: 0; cursor: pointer; }
 .contact-send[disabled] { opacity: .5; cursor: progress; }
@@ -435,3 +429,29 @@ html.lenis, html.lenis body { height: auto; }
   .gate .contact-form label { font-size: 16px; }
   .gate-help { font-size: 16px; }
 }
+#contact .gate-lock { transform-origin: 50% 60%; animation: gate-mail 3.6s ease-in-out infinite; }
+@keyframes gate-mail {
+  0%, 30% { transform: none; }
+  42% { transform: translateY(-3px) rotate(-9deg); }
+  54% { transform: translateY(-3px) rotate(8deg); }
+  66% { transform: translateY(-2px) rotate(-6deg); }
+  78% { transform: translateY(-1px) rotate(3deg); }
+  94%, 100% { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { #contact .gate-lock { animation: none; } }
+@media (min-width: 768px) {
+  .gate .contact-form { padding-top: 36px; }
+  .gate .gate-icon { width: 112px; height: 112px; margin-bottom: 18px; }
+  .gate .gate-lock { width: 58px; height: 58px; }
+  .gate h2 { font-size: 36px; line-height: 1.12; }
+  .gate .contact-lead { font-size: 19px; margin-bottom: 34px; }
+}
+@media (max-width: 767px) {
+  #contact .contact-form label { margin-bottom: 4px; }
+  #contact .contact-form input + label { margin-top: 12px; }
+  #contact textarea { height: 110px; min-height: 0; }
+  #contact .contact-send { margin-top: 10px; }
+  #contact .contact-status { margin-top: 6px; min-height: 1.2em; }
+}
+.contact-close { top: 5px; right: 5px; width: 54px; height: 54px; }
+.contact-close svg { width: 30px; height: 30px; }
