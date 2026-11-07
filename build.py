@@ -73,6 +73,14 @@ PROJECTS = [
       [I("ribeira/m2-escolha.webp", 16, 9, "Ecrã de escolha múltipla do módulo 2: uma hóspede sem água no quarto", True)],
       [I("ribeira/m3-boas-praticas.webp", 16, 9, "Resumo de boas práticas do módulo 3: comunicação escrita", True), I("ribeira/m3-resultados.webp", 16, 9, "Resultados do módulo 3: 2 de 3 situações certas à primeira", True)],
     ]),
+  # imagens por criar: capas/sonae-toolkit.webp (capa da grelha) e sonae-toolkit/hero.webp (topo da página); a galeria (rows) está vazia por agora
+  dict(slug="sonae-toolkit-psp", hero_grain=41, gate_hash="dbd7381d4fb91856d43c610d6ca71c712ce5d4391a8d562525eccf80b964c39b", link="https://sonaetoolkit.andrealvesdesign.com/", link_pt="Visualizar curso", link_en="View course", title="Sonae Toolkit PSP", cover="capas/sonae-toolkit.webp",
+    hero=I("sonae-toolkit/hero.webp", 1425, 491),
+    cat="DESIGN GRÁFICO / E-LEARNING", cat_en="GRAPHIC DESIGN / E-LEARNING",
+    date="NOVEMBRO 2026", date_en="NOVEMBER 2026",
+    text="O Toolkit PSP é um curso e-learning de Primeiros Socorros Psicológicos no Trabalho, construído a partir de um toolkit em PDF da Sonae. Em seis módulos, em formato scroll e disponíveis em português e inglês, ajuda os líderes a reconhecer sinais de alerta, abordar um colaborador e saber quando encaminhar. Fui responsável pela idealização e conceção de todo o projeto, desde a identidade visual até à interface e à programação.",
+    text_en="The PSP Toolkit is an e-learning course on Psychological First Aid at Work, built from a Sonae PDF toolkit. Across six scroll-format modules, available in Portuguese and English, it helps leaders recognise warning signs, approach a colleague and know when to refer. I was responsible for the ideation and design of the entire project, from the visual identity to the interface and programming.",
+    rows=[]),
   dict(slug="direct-padel", hero_focal=(50.22, 28.0), hero_grain=41, title="Direct Padel", cover="capas/padel.webp",
     hero=I("padel/hero.webp", 1425, 491),
     cat="REBRANDING / UI", cat_en="REBRANDING / UI",
@@ -225,11 +233,12 @@ def footer(prefix):
   <button type="button" class="fab-btn fab-top" data-to-top aria-label="Voltar ao topo" data-aria-en="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button type="button" class="fab-btn fab-contact" data-open-contact aria-haspopup="dialog" aria-label="Enviar mensagem" data-aria-en="Send a message"><img src="{prefix}assets/geral/avatar.webp" srcset="{prefix}assets/geral/avatar.webp 1x, {prefix}assets/geral/avatar@2x.webp 2x" alt="" width="56" height="56"></button>
 </div>
-<dialog class="contact" id="contact" aria-labelledby="contact-title" data-lenis-prevent>
+<dialog class="contact gate" id="contact" aria-labelledby="contact-title" data-lenis-prevent>
   <form class="contact-form" data-endpoint="{CONTACT_ENDPOINT}" data-key="{CONTACT_KEY}" data-to="{EMAIL}" novalidate>
     <button type="button" class="contact-close" data-close-contact aria-label="Fechar" data-aria-en="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    <span class="gate-icon"><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="gate-flap" d="m4.5 7.5 7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
     <h2 id="contact-title">{t("Entre em contacto", "Get in touch")}</h2>
-    <p class="contact-lead">{t("Escreva a sua mensagem e indique o seu email.", "Please write your message and provide your email address.")}</p>
+    <p class="contact-lead">{t("<span class='nw'>Indique o seu email e escreva</span> <span class='nw'>a sua mensagem.</span>", "<span class='nw'>Please provide your email address</span> <span class='nw'>and write your message.</span>")}</p>
     <label for="c-email">{t("O seu email", "Your email")}</label>
     <input id="c-email" name="email" type="email" required autocomplete="email" inputmode="email">
     <label for="c-msg">{t("Mensagem", "Message")}</label>
@@ -325,7 +334,24 @@ for idx, p in enumerate(PROJECTS):
         hero_html += '<div class="hero-gradient" aria-hidden="true" style="--hg:linear-gradient(115deg,' + ",".join(p["hero_gradient"]) + ')"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>'
     pag_prev = (f'''<a class="pag-prev" href="../{prev["slug"]}/"><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="7.3,14.7 2.5,8 7.3,1.2"/></svg><span class="vh">{t("Anterior", "Previous")}</span><span class="pag-title">{prev["title"]}</span></a>''' if prev else "")
     pag_next = (f'''<a class="pag-next" href="../{nxt["slug"]}/"><span class="vh">{t("Próximo", "Next")}</span><span class="pag-title">{nxt["title"]}</span><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="1.6,1.2 6.5,7.9 1.6,14.7"/></svg></a>''' if nxt else "")
-    project_link = (f'        <a class="button button-light" data-type href="{p["link"]}" target="_blank" rel="noopener">{t(p["link_pt"], p["link_en"])}</a>{chr(10)}' if p.get("link") else "")
+    if p.get("gate_hash"):   # curso protegido por palavra-passe (só o hash SHA-256 fica no site)
+        project_link = f'''        <button type="button" class="button button-light" data-type data-open-gate aria-haspopup="dialog">{t(p["link_pt"], p["link_en"])}</button>
+        <dialog class="contact gate" id="gate" aria-labelledby="gate-title" data-lenis-prevent data-hash="{p["gate_hash"]}" data-url="{p["link"]}">
+          <form class="contact-form" novalidate>
+            <button type="button" class="contact-close" data-close-gate aria-label="Fechar" data-aria-en="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            <span class="gate-icon"><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><path class="gate-shackle" d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4.5" y="10.5" width="15" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="15.7" r="1.6" fill="currentColor"/></svg></span>
+            <h2 id="gate-title">{t("Conteúdo protegido", "Protected content")}</h2>
+            <p class="contact-lead">{t("<span class='nw'>Introduza a palavra-passe</span> <span class='nw'>para prosseguir.</span>", "<span class='nw'>Please enter the password</span> <span class='nw'>to continue.</span>")}</p>
+            <label for="g-pass">{t("Palavra-passe", "Password")}</label>
+            <input id="g-pass" name="password" type="password" required autocomplete="off">
+            <button type="submit" class="button contact-send">{t("Aceder", "Access")}</button>
+            <p class="contact-status" role="status" aria-live="polite"></p>
+            <p class="gate-help">{t("<span class='nw'>Caso não disponha da palavra-passe</span> ", "<span class='nw'>Should you not have the password,</span> please ")}<a href="#" data-gate-contact class="nw">{t("entre em contacto", "get in touch")}</a>.</p>
+          </form>
+        </dialog>
+'''
+    else:
+        project_link = (f'        <a class="button button-light" data-type href="{p["link"]}" target="_blank" rel="noopener">{t(p["link_pt"], p["link_en"])}</a>{chr(10)}' if p.get("link") else "")
     side_open, side_close = ('      <div class="info-side">'+chr(10), '      </div>'+chr(10)) if p.get("link") else ("", "")
     h2 = p.get("h2", p["title"].upper() if p["slug"] != "unlock-the-magic" else p["title"])
     body = f'''

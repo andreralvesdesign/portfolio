@@ -314,12 +314,37 @@ dialog.contact[open] { animation: contact-in .35s cubic-bezier(.2, .7, .2, 1); }
 .contact-form h2 { font: 500 var(--fs-h4)/1.171 var(--heading); letter-spacing: -.02em; margin: 0 0 4px; padding-right: 40px; }
 .contact-lead { margin: 0 0 10px; color: #444; }
 .contact-form label { font-size: 14px; margin-top: 8px; }
-.contact-form input[type="email"], .contact-form textarea {
+.contact-form input[type="email"], .contact-form input[type="password"], .contact-form textarea {
   font: 400 16px/1.4 var(--body); color: #000; background: #fff; border: 1px solid #000; border-radius: 0; padding: 12px 14px; width: 100%; resize: vertical;
 }
 .contact-form input:focus-visible, .contact-form textarea:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 .contact-form [aria-invalid="true"] { border-color: #c0261c; box-shadow: 0 0 0 1px #c0261c; }
 .contact-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.gate .contact-form { padding: 44px 40px 30px; gap: 0; text-align: center; justify-items: stretch; }
+.gate-icon { justify-self: center; display: grid; place-items: center; width: 96px; height: 96px; border-radius: 50%; background: #f1f1f1; margin-bottom: 22px; }
+.gate-lock { width: 48px; height: 48px; flex: none; overflow: visible; }
+.gate h2 { padding-right: 0; margin: 0 0 10px; font-size: calc(var(--fs-h4) * 1.05); }
+.gate .contact-lead { margin: 0 0 42px; line-height: 1.5; }
+.gate .contact-form label { text-align: left; font-size: 13px; letter-spacing: .02em; margin: 0 0 6px; color: #444; }
+.gate .contact-send { justify-self: stretch; width: 100%; margin-top: 12px; text-align: center; justify-content: center; }
+.gate .contact-status { min-height: 1.4em; margin: 10px 0 0; }
+.gate-help { margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #e3e3e3; font-size: 14px; color: #555; }
+.gate-shackle { transform-box: view-box; transform-origin: 16px 10.5px; animation: gate-unlock 3.6s ease-in-out infinite; }
+.gate-flap { transform-box: view-box; transform-origin: 12px 7.5px; animation: gate-flap 3.6s ease-in-out infinite; }
+@keyframes gate-flap {
+  0%, 30% { transform: none; }
+  50%, 72% { transform: scaleY(-.55); }
+  90%, 100% { transform: none; }
+}
+@keyframes gate-unlock {
+  0%, 30% { transform: none; }
+  42% { transform: translateY(-1.1px); }
+  54%, 72% { transform: translateY(-1.1px) rotate(32deg); }
+  84% { transform: translateY(-1.1px); }
+  94%, 100% { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .gate-shackle, .gate-flap { animation: none; } }
+.gate-help a { text-decoration: underline; color: #000; }
 .contact-send { justify-self: start; margin-top: 14px; border: 0; cursor: pointer; }
 .contact-send[disabled] { opacity: .5; cursor: progress; }
 .contact-status { margin: 6px 0 0; min-height: 1.5em; font-size: 14px; }
@@ -399,4 +424,14 @@ html.lenis, html.lenis body { height: auto; }
 .notfound .button { margin-top: 36px; }
 
 /* ecrãs de toque: sem o clarão de seleção ao tocar nos botões do cabeçalho */
-.lang-btn, .burger, .social { -webkit-tap-highlight-color: transparent; }
+.lang-btn, .burger, .social { -webkit-tap-highlight-color: transparent; }.gate .contact-form label + input + label, .gate .contact-form input + label { margin-top: 16px; }
+.gate .contact-lead, .gate-help { text-wrap: balance; }
+.nw { white-space: nowrap; }
+@media (max-width: 767px) {
+  .gate .gate-icon { width: 116px; height: 116px; margin-bottom: 26px; }
+  .gate .gate-lock { width: 60px; height: 60px; }
+  .gate h2 { font-size: 32px; line-height: 1.15; }
+  .gate .contact-lead { font-size: 18px; margin-bottom: 36px; }
+  .gate .contact-form label { font-size: 16px; }
+  .gate-help { font-size: 16px; }
+}

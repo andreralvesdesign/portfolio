@@ -175,6 +175,37 @@
     });
   }
 
+  /* ---------- projeto protegido: janela de palavra-passe (compara o SHA-256; o link só abre se coincidir) ---------- */
+  (function () {
+    var g = doc.getElementById("gate");
+    if (!g || !g.showModal || !window.crypto || !crypto.subtle) return;
+    var f = g.querySelector("form"), st = g.querySelector(".contact-status"), opener = null;
+    var L = function (pt, en) { return root.lang === "en" ? en : pt; };
+    doc.querySelectorAll("[data-open-gate]").forEach(function (b) {
+      b.addEventListener("click", function () { opener = b; st.textContent = ""; st.className = "contact-status"; f.password.value = ""; f.password.removeAttribute("aria-invalid"); doc.body.style.overflow = "hidden"; if (lenis) lenis.stop(); g.showModal(); f.password.focus(); });
+    });
+    g.querySelector("[data-close-gate]").addEventListener("click", function () { g.close(); });
+    g.addEventListener("click", function (e) { if (e.target === g) g.close(); });
+    g.addEventListener("close", function () { doc.body.style.overflow = ""; if (lenis) lenis.start(); if (opener && !g._toContact) opener.focus(); g._toContact = false; });
+    g.querySelector("[data-gate-contact]").addEventListener("click", function (e) {
+      e.preventDefault(); g._toContact = true; g.close();
+      var c = doc.querySelector("[data-open-contact]"); if (c) c.click();
+    });
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = f.password.value;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(v)).then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+        if (v && hex === g.getAttribute("data-hash")) {
+          g.close(); window.open(g.getAttribute("data-url"), "_blank", "noopener");
+        } else {
+          f.password.setAttribute("aria-invalid", "true"); st.className = "contact-status err";
+          st.textContent = L("Palavra-passe incorreta.", "Incorrect password."); f.password.select();
+        }
+      });
+    });
+  })();
+
   /* ---------- grão de película animado na imagem de topo ----------
      O shader é o do original (Squarespace, efeito "film grain"), tal e qual: o brilho de cada pixel é modulado
      por ruído simplex novo a cada imagem (intensidade em data-grain, em %; velocidade 100: uTime sobe 0,01 por imagem).
