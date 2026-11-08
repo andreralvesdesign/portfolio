@@ -75,7 +75,7 @@ PROJECTS = [
     ]),
   # imagens por criar: capas/sonae-toolkit.webp (capa da grelha) e sonae-toolkit/hero.webp (topo da página); a galeria (rows) está vazia por agora
   dict(slug="sonae-toolkit-psp", hero_grain=41, gate_hash="dbd7381d4fb91856d43c610d6ca71c712ce5d4391a8d562525eccf80b964c39b", link="https://sonaetoolkit.andrealvesdesign.com/", link_pt="Visualizar Toolkit", link_en="View Toolkit", title="Sonae Toolkit PSP", cover="capas/sonae-toolkit.webp",
-    hero=I("sonae-toolkit/hero.webp", 1425, 491),
+    hero=V("sonae-toolkit/header.mp4", 1425, 491),
     cat="DESIGN GRÁFICO / E-LEARNING", cat_en="GRAPHIC DESIGN / E-LEARNING",
     date="NOVEMBRO 2026", date_en="NOVEMBER 2026",
     text="O Toolkit PSP foi um kit digital de consulta para os colaboradores da Sonae sobre Primeiros Socorros Psicológicos no Trabalho. Ao longo de seis módulos, prepara os colaboradores para reconhecerem sinais de alerta, apoiarem um colega e lidarem da melhor forma com cada situação. Fui responsável pela conceção gráfica de todo o projeto, desde a identidade visual até à interface e à respetiva programação.",
@@ -332,6 +332,9 @@ for idx, p in enumerate(PROJECTS):
         hero_attrs += f' data-grain="{p["hero_grain"]}"'
     if p.get("hero_gradient"):   # gradiente animado em loop por cima da imagem de topo, nos tons dela
         hero_html += '<div class="hero-gradient" aria-hidden="true" style="--hg:linear-gradient(115deg,' + ",".join(p["hero_gradient"]) + ')"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>'
+    if p.get("hero_float"):   # elementos gráficos a flutuar, muito devagar e em loop, por cima do vídeo
+        its = "".join(f'<img src="{pre}assets/sonae-toolkit/float/{n}.webp" alt="" aria-hidden="true" decoding="async" style="--x:{x}%;--y:{y}%;--h:{h}cqh;--dx:{dx}cqh;--dy:{dy}cqh;--r:{r}deg;--d:{d}s;--l:{l}s">' for n, x, y, h, dx, dy, r, d, l in p["hero_float"])
+        hero_html += f'<div class="hero-float" aria-hidden="true">{its}</div>'
     pag_prev = (f'''<a class="pag-prev" href="../{prev["slug"]}/"><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="7.3,14.7 2.5,8 7.3,1.2"/></svg><span class="vh">{t("Anterior", "Previous")}</span><span class="pag-title">{prev["title"]}</span></a>''' if prev else "")
     pag_next = (f'''<a class="pag-next" href="../{nxt["slug"]}/"><span class="vh">{t("Próximo", "Next")}</span><span class="pag-title">{nxt["title"]}</span><svg viewBox="0 0 9 16" aria-hidden="true"><polyline fill="none" points="1.6,1.2 6.5,7.9 1.6,14.7"/></svg></a>''' if nxt else "")
     if p.get("gate_hash"):   # curso protegido por palavra-passe (só o hash SHA-256 fica no site)

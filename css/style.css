@@ -455,3 +455,12 @@ html.lenis, html.lenis body { height: auto; }
 }
 .contact-close { top: 5px; right: 5px; width: 54px; height: 54px; }
 .contact-close svg { width: 30px; height: 30px; }
+
+/* elementos gráficos a flutuar no topo (Sonae): movimento muito suave, em loop; os tamanhos acompanham a altura do topo */
+.hero-float { position: absolute; inset: var(--header-h) 0 0 0; z-index: 2; container-type: size; pointer-events: none; overflow: hidden; }
+.hero-float img { position: absolute; left: var(--x); top: var(--y); height: calc(var(--h) * .85); width: auto; will-change: transform; animation: hero-float var(--d) ease-in-out var(--l) infinite alternate; }
+@keyframes hero-float {
+  from { transform: translate3d(0, 0, 0) rotate(var(--r)); }
+  to { transform: translate3d(var(--dx), var(--dy), 0) rotate(calc(var(--r) * -1)); }
+}
+@media (prefers-reduced-motion: reduce) { .hero-float img { animation: none; } }
