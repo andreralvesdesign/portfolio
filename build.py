@@ -80,7 +80,10 @@ PROJECTS = [
     date="NOVEMBRO 2026", date_en="NOVEMBER 2026",
     text="O Toolkit PSP foi um kit digital de consulta para os colaboradores da Sonae sobre Primeiros Socorros Psicológicos no Trabalho. Ao longo de seis módulos, prepara os colaboradores para reconhecerem sinais de alerta, apoiarem um colega e lidarem da melhor forma com cada situação. Fui responsável pela conceção gráfica de todo o projeto, desde a identidade visual até à interface e à respetiva programação.",
     text_en="The PSP Toolkit was a digital reference kit for Sonae employees on Psychological First Aid at Work. Across six modules, it prepares employees to recognise warning signs, support a colleague and handle each situation in the best possible way. I was responsible for the graphic design of the entire project, from the visual identity to the interface and its programming.",
-    rows=[]),
+    rows=[
+      [V("sonae-toolkit/mockup.mp4", 16, 9, exact=True)],
+      [V("sonae-toolkit/mockup2.mp4", 16, 9, exact=True)],
+    ]),
   dict(slug="direct-padel", hero_focal=(50.22, 28.0), hero_grain=41, title="Direct Padel", cover="capas/padel.webp",
     hero=I("padel/hero.webp", 1425, 491),
     cat="REBRANDING / UI", cat_en="REBRANDING / UI",
