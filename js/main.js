@@ -178,8 +178,29 @@
   /* ---------- projeto protegido: janela de palavra-passe (compara o SHA-256; o link só abre se coincidir) ---------- */
   (function () {
     var g = doc.getElementById("gate");
-    if (!g || !g.showModal || !window.crypto || !crypto.subtle) return;
+    if (!g || !g.showModal) return;
     var f = g.querySelector("form"), st = g.querySelector(".contact-status"), opener = null;
+    function sha256(str) {
+      var K = [], H = [1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225], p = 2, n = 0, i, j;
+      var rot = function (x, c) { return (x >>> c) | (x << (32 - c)); };
+      while (n < 64) { for (i = 2; i * i <= p && p % i; i++); if (i * i > p) { var c = Math.pow(p, 1 / 3); K[n++] = ((c - (c | 0)) * 4294967296) | 0; } p++; }
+      var bytes = unescape(encodeURIComponent(str)), len = bytes.length, w = [];
+      for (i = 0; i < (((len + 8) >> 6) + 1) * 16; i++) w[i] = 0;
+      for (i = 0; i < len; i++) w[i >> 2] |= bytes.charCodeAt(i) << (24 - (i % 4) * 8);
+      w[len >> 2] |= 0x80 << (24 - (len % 4) * 8);
+      w[(((len + 8) >> 6) + 1) * 16 - 1] = len * 8;
+      for (j = 0; j < w.length; j += 16) {
+        var W = w.slice(j, j + 16), h = H.slice(0), t;
+        for (i = 0; i < 64; i++) {
+          if (i >= 16) { var w15 = W[i - 15], w2 = W[i - 2]; W[i] = (W[i - 16] + (rot(w15, 7) ^ rot(w15, 18) ^ (w15 >>> 3)) + W[i - 7] + (rot(w2, 17) ^ rot(w2, 19) ^ (w2 >>> 10))) | 0; }
+          t = (h[7] + (rot(h[4], 6) ^ rot(h[4], 11) ^ rot(h[4], 25)) + ((h[4] & h[5]) ^ (~h[4] & h[6])) + K[i] + (W[i] | 0)) | 0;
+          var t2 = ((rot(h[0], 2) ^ rot(h[0], 13) ^ rot(h[0], 22)) + ((h[0] & h[1]) ^ (h[0] & h[2]) ^ (h[1] & h[2]))) | 0;
+          h = [(t + t2) | 0, h[0], h[1], h[2], (h[3] + t) | 0, h[4], h[5], h[6]];
+        }
+        for (i = 0; i < 8; i++) H[i] = (H[i] + h[i]) | 0;
+      }
+      return H.map(function (x) { return ("00000000" + (x >>> 0).toString(16)).slice(-8); }).join("");
+    }
     var L = function (pt, en) { return root.lang === "en" ? en : pt; };
     doc.querySelectorAll("[data-open-gate]").forEach(function (b) {
       b.addEventListener("click", function () { opener = b; st.textContent = ""; st.className = "contact-status"; f.password.value = ""; f.password.removeAttribute("aria-invalid"); doc.body.style.overflow = "hidden"; if (lenis) lenis.stop(); g.showModal(); f.password.focus(); });
@@ -194,15 +215,16 @@
     f.addEventListener("submit", function (e) {
       e.preventDefault();
       var v = f.password.value;
-      crypto.subtle.digest("SHA-256", new TextEncoder().encode(v)).then(function (buf) {
-        var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
-        if (v && hex === g.getAttribute("data-hash")) {
-          g.close(); window.open(g.getAttribute("data-url"), "_blank", "noopener");
-        } else {
-          f.password.setAttribute("aria-invalid", "true"); st.className = "contact-status err";
-          st.textContent = L("Palavra-passe incorreta.", "Incorrect password."); f.password.select();
-        }
-      });
+      // O SHA-256 é calculado de forma síncrona: assim a abertura do link continua ligada ao toque do utilizador
+      // (no Safari de telemóvel, abrir uma janela depois de uma operação assíncrona é bloqueado).
+      if (v && sha256(v) === g.getAttribute("data-hash")) {
+        g.close();
+        var a = doc.createElement("a"); a.href = g.getAttribute("data-url"); a.target = "_blank"; a.rel = "noopener";
+        doc.body.appendChild(a); a.click(); a.remove();
+      } else {
+        f.password.setAttribute("aria-invalid", "true"); st.className = "contact-status err";
+        st.textContent = L("Palavra-passe incorreta.", "Incorrect password."); f.password.select();
+      }
     });
   })();
 
