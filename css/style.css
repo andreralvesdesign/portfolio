@@ -145,6 +145,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .row-pair .gallery-item { aspect-ratio: auto !important; height: 100%; }
 }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-item img[src*="sonae-toolkit/curso"] { outline: 1px solid rgba(128, 128, 128, .28); outline-offset: -1px; }   /* stroke finíssimo cinza claro à volta dos ecrãs do curso */
 .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
 
 /* altura cresce com o ecrã, como no original: 123 px a 1440 · 158 px a 1920 */
